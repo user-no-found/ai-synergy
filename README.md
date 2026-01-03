@@ -1,4 +1,4 @@
-# AI-Ynergy
+# AI-Synergy
 
 Codex + Claude 双AI协同开发方案的可移植配置镜像。
 
@@ -54,17 +54,46 @@ ai-synergy/
 
 ### 新设备部署
 
-1. 克隆本仓库到 `~/ai-synergy/`
-2. 在 Claude 中启动 `ai-agent` 子代理
-3. 让 ai-agent 读取 `~/ai-synergy/` 并恢复配置
+#### 步骤1：克隆仓库
 
+```bash
+git clone https://github.com/user-no-found/ai-synergy.git ~/ai-synergy
 ```
-ai-agent 会自动：
-1. 读取 MANAGED.yaml 获取管理对象清单
-2. 读取 PATHS.yaml 获取路径映射
-3. 输出恢复计划等待你确认
-4. 确认后将配置恢复到真实位置
+
+#### 步骤2：手动恢复配置
+
+由于新设备没有 ai-agent，需要先手动恢复基础配置：
+
+```bash
+# 创建目录
+mkdir -p ~/.claude/agents ~/.claude/skills ~/.codex/skills
+
+# 恢复 Claude 配置
+cp ~/ai-synergy/claude/CLAUDE.md ~/.claude/CLAUDE.md
+cp -r ~/ai-synergy/claude/agents/* ~/.claude/agents/
+cp -r ~/ai-synergy/claude/skills/* ~/.claude/skills/
+
+# 恢复 Codex 配置
+cp ~/ai-synergy/codex/AGENTS.md ~/.codex/AGENTS.md
+cp -r ~/ai-synergy/codex/skills/* ~/.codex/skills/
 ```
+
+#### 步骤3：验证
+
+```bash
+# 检查 ai-agent 是否存在
+cat ~/.claude/agents/ai-agent.md | head -5
+
+# 检查 Codex skills
+ls ~/.codex/skills/
+```
+
+#### 步骤4：后续维护
+
+配置恢复后，后续变更由 ai-agent 统一管理：
+- 在 Claude 中启动 ai-agent
+- ai-agent 会读取 `~/ai-synergy/ARCHITECTURE.md` 了解架构
+- 修改配置时，ai-agent 输出变更提案 → 用户确认 → 应用并同步镜像
 
 ### 日常使用
 
