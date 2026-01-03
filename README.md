@@ -1,6 +1,6 @@
 # AI-Synergy
 
-Codex + Claude 双AI协同开发方案的可移植配置镜像。
+个人使用的 Codex + Claude 双AI协同开发方案。
 
 ## 概述
 
