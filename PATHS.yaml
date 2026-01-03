@@ -1,0 +1,149 @@
+# ai-synergy 路径映射（给 ai-agent 用）
+# 说明：
+# - 本文件的路径用 `~` 表示当前用户的 HOME，保证跨用户名可移植
+# - ai-agent 应在执行前展开 `~`，并在写入前做备份
+# - 只写"本方案纳入管理的全局对象"，禁止写入任何项目级内容
+schema_version: 1
+
+paths:
+  # ========== Codex Skills ==========
+  - mirror_path: ~/ai-synergy/codex/skills/project-bootstrap
+    real_path: ~/.codex/skills/project-bootstrap
+    kind: skill
+    managed_by: ai-agent
+    note: 项目启动与落盘导航
+
+  - mirror_path: ~/ai-synergy/codex/skills/plan-revision
+    real_path: ~/.codex/skills/plan-revision
+    kind: skill
+    managed_by: ai-agent
+    note: 规划修订导航
+
+  - mirror_path: ~/ai-synergy/codex/skills/plan-finalize
+    real_path: ~/.codex/skills/plan-finalize
+    kind: skill
+    managed_by: ai-agent
+    note: 方案定稿导航（6步）
+
+  - mirror_path: ~/ai-synergy/codex/skills/plan-confirm
+    real_path: ~/.codex/skills/plan-confirm
+    kind: skill
+    managed_by: ai-agent
+    note: 方案确认导航（5步）
+
+  - mirror_path: ~/ai-synergy/codex/skills/code-review
+    real_path: ~/.codex/skills/code-review
+    kind: skill
+    managed_by: ai-agent
+    note: 代码审核导航（7步）
+
+  - mirror_path: ~/ai-synergy/codex/skills/project-complete
+    real_path: ~/.codex/skills/project-complete
+    kind: skill
+    managed_by: ai-agent
+    note: 项目完成导航（6步）
+
+  - mirror_path: ~/ai-synergy/codex/skills/build-report
+    real_path: ~/.codex/skills/build-report
+    kind: skill
+    managed_by: ai-agent
+    note: 编译报告模板
+
+  - mirror_path: ~/ai-synergy/codex/skills/agents-registry
+    real_path: ~/.codex/skills/agents-registry
+    kind: skill
+    managed_by: ai-agent
+    note: 子代理登记表
+
+  # ========== Claude Skills ==========
+  - mirror_path: ~/ai-synergy/claude/skills/draft-plan-review
+    real_path: ~/.claude/skills/draft-plan-review
+    kind: skill
+    managed_by: ai-agent
+    note: 预定清单复审
+
+  - mirror_path: ~/ai-synergy/claude/skills/revision-confirm
+    real_path: ~/.claude/skills/revision-confirm
+    kind: skill
+    managed_by: ai-agent
+    note: 修订确认导航
+
+  # ========== Claude Agents ==========
+  - mirror_path: ~/ai-synergy/claude/agents/python-agent.md
+    real_path: ~/.claude/agents/python-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: Python执行子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/rust-agent.md
+    real_path: ~/.claude/agents/rust-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: Rust执行子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/c-agent.md
+    real_path: ~/.claude/agents/c-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: C执行子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/ui-agent.md
+    real_path: ~/.claude/agents/ui-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: UI执行子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/doc-agent.md
+    real_path: ~/.claude/agents/doc-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: 文档执行子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/build-agent.md
+    real_path: ~/.claude/agents/build-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: 构建执行子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/sec-agent.md
+    real_path: ~/.claude/agents/sec-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: 安全审查子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/env-agent.md
+    real_path: ~/.claude/agents/env-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: 环境安装子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/ai-agent.md
+    real_path: ~/.claude/agents/ai-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: 全局统筹与治理子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/sub-agent.md
+    real_path: ~/.claude/agents/sub-agent.md
+    kind: agent
+    managed_by: ai-agent
+    note: 子代理管理子代理
+
+  - mirror_path: ~/ai-synergy/claude/agents/skill-designer.md
+    real_path: ~/.claude/agents/skill-designer.md
+    kind: agent
+    managed_by: ai-agent
+    note: Skill设计专家
+
+  # ========== Global Config ==========
+  - mirror_path: ~/ai-synergy/claude/CLAUDE.md
+    real_path: ~/.claude/CLAUDE.md
+    kind: config
+    managed_by: ai-agent
+    note: Claude Code全局指令
+
+  - mirror_path: ~/ai-synergy/codex/AGENTS.md
+    real_path: ~/.codex/AGENTS.md
+    kind: config
+    managed_by: ai-agent
+    note: OpenAI Codex全局指令

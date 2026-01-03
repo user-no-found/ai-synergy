@@ -1,0 +1,41 @@
+agents:
+- name: ai-agent
+  role: governance
+  status: active
+  notes: 全局统筹与治理：修改 Codex/Claude 全局提示词与 skills、维护全局流程规则与 registry 结构，并同步维护 ~/ai-synergy（仅在需要全局修复/升级/迁移时启动；不做业务实现）
+- name: Sub-agent
+  role: agent-admin
+  status: active
+  notes: 子代理管理：创建/补齐 Claude 子代理并更新 registry；不参与任何业务实现/代码修改
+- name: python-agent
+  role: python
+  status: active
+  notes: Python相关实现与修改；并行时开多个同名会话
+- name: rust-agent
+  role: rust
+  status: active
+  notes: Rust相关实现与修改（默认全路径不use，宏/trait例外）；并行时开多个同名会话
+- name: c-agent
+  role: c
+  status: active
+  notes: C语言相关实现与构建脚本
+- name: sec-agent
+  role: sec
+  status: active
+  notes: 安全审查与风险报告（默认只输出报告）
+- name: ui-agent
+  role: ui
+  status: active
+  notes: UI与交互相关修改
+- name: build-agent
+  role: build
+  status: active
+  notes: 构建/CI相关修改
+- name: doc-agent
+  role: doc
+  status: active
+  notes: 文档与变更说明维护
+- name: env-agent
+  role: env
+  status: active
+  notes: 环境安装：安装项目依赖环境并更新 ~/environment.md

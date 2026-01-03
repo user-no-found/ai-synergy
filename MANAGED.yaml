@@ -1,0 +1,148 @@
+# ai-synergy 管理白名单（给 ai-agent 用）
+# 说明：
+# - 只有这里列出的对象允许被镜像/恢复，防止"越用越脏"
+# - 本文件的路径用 `~` 表示当前用户的 HOME，保证跨用户名可移植
+schema_version: 1
+
+managed:
+  # ========== Codex Skills ==========
+  - kind: codex-skill
+    name: project-bootstrap
+    mirror_path: ~/ai-synergy/codex/skills/project-bootstrap
+    real_path: ~/.codex/skills/project-bootstrap
+    note: 项目启动与落盘导航
+
+  - kind: codex-skill
+    name: plan-revision
+    mirror_path: ~/ai-synergy/codex/skills/plan-revision
+    real_path: ~/.codex/skills/plan-revision
+    note: 规划修订导航（Codex评估Claude分析）
+
+  - kind: codex-skill
+    name: plan-finalize
+    mirror_path: ~/ai-synergy/codex/skills/plan-finalize
+    real_path: ~/.codex/skills/plan-finalize
+    note: 方案定稿导航（6步）
+
+  - kind: codex-skill
+    name: plan-confirm
+    mirror_path: ~/ai-synergy/codex/skills/plan-confirm
+    real_path: ~/.codex/skills/plan-confirm
+    note: 方案确认导航（5步，含OpenSpec初始化）
+
+  - kind: codex-skill
+    name: code-review
+    mirror_path: ~/ai-synergy/codex/skills/code-review
+    real_path: ~/.codex/skills/code-review
+    note: 代码审核导航（7步）
+
+  - kind: codex-skill
+    name: project-complete
+    mirror_path: ~/ai-synergy/codex/skills/project-complete
+    real_path: ~/.codex/skills/project-complete
+    note: 项目完成导航（6步，含git push）
+
+  - kind: codex-skill
+    name: build-report
+    mirror_path: ~/ai-synergy/codex/skills/build-report
+    real_path: ~/.codex/skills/build-report
+    note: 编译报告模板
+
+  - kind: codex-skill
+    name: agents-registry
+    mirror_path: ~/ai-synergy/codex/skills/agents-registry
+    real_path: ~/.codex/skills/agents-registry
+    note: 子代理登记表
+
+  # ========== Claude Skills ==========
+  - kind: claude-skill
+    name: draft-plan-review
+    mirror_path: ~/ai-synergy/claude/skills/draft-plan-review
+    real_path: ~/.claude/skills/draft-plan-review
+    note: 预定清单复审（Claude分析Codex草案）
+
+  - kind: claude-skill
+    name: revision-confirm
+    mirror_path: ~/ai-synergy/claude/skills/revision-confirm
+    real_path: ~/.claude/skills/revision-confirm
+    note: 修订确认导航（Claude确认Codex修订）
+
+  # ========== Claude Agents ==========
+  - kind: claude-agent
+    name: python-agent
+    mirror_path: ~/ai-synergy/claude/agents/python-agent.md
+    real_path: ~/.claude/agents/python-agent.md
+    note: Python执行子代理
+
+  - kind: claude-agent
+    name: rust-agent
+    mirror_path: ~/ai-synergy/claude/agents/rust-agent.md
+    real_path: ~/.claude/agents/rust-agent.md
+    note: Rust执行子代理
+
+  - kind: claude-agent
+    name: c-agent
+    mirror_path: ~/ai-synergy/claude/agents/c-agent.md
+    real_path: ~/.claude/agents/c-agent.md
+    note: C执行子代理
+
+  - kind: claude-agent
+    name: ui-agent
+    mirror_path: ~/ai-synergy/claude/agents/ui-agent.md
+    real_path: ~/.claude/agents/ui-agent.md
+    note: UI执行子代理
+
+  - kind: claude-agent
+    name: doc-agent
+    mirror_path: ~/ai-synergy/claude/agents/doc-agent.md
+    real_path: ~/.claude/agents/doc-agent.md
+    note: 文档执行子代理
+
+  - kind: claude-agent
+    name: build-agent
+    mirror_path: ~/ai-synergy/claude/agents/build-agent.md
+    real_path: ~/.claude/agents/build-agent.md
+    note: 构建执行子代理
+
+  - kind: claude-agent
+    name: sec-agent
+    mirror_path: ~/ai-synergy/claude/agents/sec-agent.md
+    real_path: ~/.claude/agents/sec-agent.md
+    note: 安全审查子代理
+
+  - kind: claude-agent
+    name: env-agent
+    mirror_path: ~/ai-synergy/claude/agents/env-agent.md
+    real_path: ~/.claude/agents/env-agent.md
+    note: 环境安装子代理
+
+  - kind: claude-agent
+    name: ai-agent
+    mirror_path: ~/ai-synergy/claude/agents/ai-agent.md
+    real_path: ~/.claude/agents/ai-agent.md
+    note: 全局统筹与治理子代理
+
+  - kind: claude-agent
+    name: sub-agent
+    mirror_path: ~/ai-synergy/claude/agents/sub-agent.md
+    real_path: ~/.claude/agents/sub-agent.md
+    note: 子代理管理子代理
+
+  - kind: claude-agent
+    name: skill-designer
+    mirror_path: ~/ai-synergy/claude/agents/skill-designer.md
+    real_path: ~/.claude/agents/skill-designer.md
+    note: Skill设计专家
+
+  # ========== Global Config ==========
+  - kind: global-prompt
+    name: claude-global
+    mirror_path: ~/ai-synergy/claude/CLAUDE.md
+    real_path: ~/.claude/CLAUDE.md
+    note: Claude Code全局指令
+
+  - kind: global-prompt
+    name: codex-global
+    mirror_path: ~/ai-synergy/codex/AGENTS.md
+    real_path: ~/.codex/AGENTS.md
+    note: OpenAI Codex全局指令
