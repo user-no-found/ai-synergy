@@ -15,7 +15,7 @@ Codex + Claude 双AI协同开发方案的可移植配置镜像。
 Codex（规划/审核）  <--用户中转-->  Claude（分析/执行）
        ↓                              ↓
    Skills x8                      Skills x2
-                                  Agents x11
+                                  Agents x10
 ```
 
 ### 双循环工作流
