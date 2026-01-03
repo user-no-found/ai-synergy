@@ -129,12 +129,6 @@ paths:
     managed_by: ai-agent
     note: 子代理管理子代理
 
-  - mirror_path: ~/ai-synergy/claude/agents/skill-designer.md
-    real_path: ~/.claude/agents/skill-designer.md
-    kind: agent
-    managed_by: ai-agent
-    note: Skill设计专家
-
   # ========== Global Config ==========
   - mirror_path: ~/ai-synergy/claude/CLAUDE.md
     real_path: ~/.claude/CLAUDE.md

@@ -137,7 +137,6 @@ ls ~/.codex/skills/
 | env-agent | 环境安装 |
 | ai-agent | 全局治理 |
 | sub-agent | 子代理管理 |
-| skill-designer | Skill设计 |
 
 ## 核心规则
 

@@ -128,12 +128,6 @@ managed:
     real_path: ~/.claude/agents/sub-agent.md
     note: 子代理管理子代理
 
-  - kind: claude-agent
-    name: skill-designer
-    mirror_path: ~/ai-synergy/claude/agents/skill-designer.md
-    real_path: ~/.claude/agents/skill-designer.md
-    note: Skill设计专家
-
   # ========== Global Config ==========
   - kind: global-prompt
     name: claude-global

@@ -8,7 +8,7 @@
 Codex（规划/审核）  <--用户中转-->  Claude（分析/执行）
        ↓                              ↓
    Skills x6                      Skills x2
-                                  Agents x11
+                                  Agents x10
 ```
 
 ## 二、循环A（规划阶段）
@@ -137,7 +137,6 @@ Codex（规划/审核）  <--用户中转-->  Claude（分析/执行）
 | env-agent | ~/.claude/agents/env-agent.md | 环境安装 |
 | ai-agent | ~/.claude/agents/ai-agent.md | 全局治理 |
 | Sub-agent | ~/.claude/agents/sub-agent.md | 子代理管理 |
-| skill-designer | ~/.claude/agents/skill-designer.md | Skill设计 |
 
 ## 六、全局配置
 
