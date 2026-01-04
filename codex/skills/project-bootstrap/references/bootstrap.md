@@ -13,11 +13,6 @@
 
 2) 创建 Record 目录结构（项目内）
    - `Record/plan/`
-   - `Record/design/`
-   - `Record/impl/`
-   - `Record/review/`
-   - `Record/release/`
-   - `Record/locks/`
 
 3) 生成并落盘"预定清单（草案）"
    - 文件路径固定：`Record/plan/draft-plan.md`
