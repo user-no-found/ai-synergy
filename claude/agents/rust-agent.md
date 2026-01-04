@@ -28,8 +28,8 @@ model: inherit
 ##模块化架构
 - main.rs只做简单的启动/初始化，类似目录索引
 - 按职责拆分模块，每个模块单一职责
-- 大模块用文件夹组织，内含mod.rs作为入口导出子模块
-- 参考结构（见 https://github.com/user-no-found/demo/tree/main/rust-modules）：
+- 小模块用单文件，大模块用文件夹组织，内含mod.rs作为入口导出子模块
+- 示例结构：
   ```
   src/
   ├── main.rs          # 仅启动入口
