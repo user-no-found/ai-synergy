@@ -92,6 +92,20 @@ project_root: "<项目根目录>"
   - ...
 - **输出**：...
 
+### 启动命令
+
+> 在 Claude 对话中复制粘贴以下命令启动子代理：
+
+```
+使用 python-agent 执行 proposal_id: python-agent-01
+```
+
+```
+使用 rust-agent 执行 proposal_id: rust-agent-01
+```
+
+（根据实际分工表生成对应命令）
+
 ### 运行槽位说明
 
 - 运行槽位（如python-agent-01/02）仅用于分工标记和提案区分
