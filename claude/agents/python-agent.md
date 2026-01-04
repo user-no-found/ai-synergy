@@ -57,10 +57,11 @@ model: inherit
 
 任务完成后必须依次执行：
 
-1. **验证**
-   - 执行语法检查或测试（如`python -m py_compile`、`pytest`等）
+1. **代码检查**
+   - 执行语法检查（如`python -m py_compile`、`mypy`等）
    - 确保无语法错误
-   - 如有错误，修复后重新验证
+   - 如有错误，修复后重新检查
+   - **不执行打包/构建，构建由build-agent负责**
 
 2. **本地git提交**
    - 提交本次修改（禁止AI署名）
@@ -72,12 +73,12 @@ model: inherit
      ## YYYY-MM-DD HH:MM [proposal_id] 执行完成
      - 子代理：python-agent
      - 完成内容：{简要列表}
-     - 验证状态：通过/失败（附错误摘要）
+     - 检查状态：通过/失败（附错误摘要）
      - commit: {commit hash}
      ```
 
 4. **输出完成报告**
    - 列出完成的功能点
-   - 验证结果
+   - 检查结果
    - commit信息
    - 告知用户通知Codex进行代码审核

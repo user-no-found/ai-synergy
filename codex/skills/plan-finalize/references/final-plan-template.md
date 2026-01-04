@@ -67,12 +67,11 @@ project_root: "<项目根目录>"
 
 ### 分工总览
 
-| 运行槽位 | 子代理 | role | 负责工作 |
-|---------|-------|------|---------|
-| python-agent-01 | python-agent | python | 模块A实现 |
-| python-agent-02 | python-agent | python | 模块B实现 |
-| rust-agent-01 | rust-agent | rust | 核心逻辑实现 |
-| ... | ... | ... | ... |
+| 运行槽位 | 子代理 | proposal_id | 负责工作 |
+|---------|-------|-------------|---------|
+| python-agent-01 | python-agent | xxx-python-agent | 模块A实现 |
+| rust-agent-01 | rust-agent | xxx-rust-agent | 核心逻辑实现 |
+| build-agent-01 | build-agent | xxx-build-agent | 构建与产物输出 |
 
 ### 详细分工
 
@@ -82,26 +81,41 @@ project_root: "<项目根目录>"
 - **具体任务**：
   - ...
   - ...
-- **输出**：...
+- **输出**：源代码（不编译）
 
-#### python-agent-02（由python-agent执行）
+#### rust-agent-01（由rust-agent执行）
 
-- **负责工作**：模块B实现
+- **负责工作**：核心逻辑实现
 - **具体任务**：
   - ...
   - ...
-- **输出**：...
+- **输出**：源代码（不编译）
+
+#### build-agent-01（由build-agent执行）
+
+- **负责工作**：构建与产物输出
+- **构建命令**：`cargo build --release` / `pnpm build` / ...
+- **目标产物**：
+  - 路径：`target/release/xxx` / `dist/` / ...
+  - 类型：可执行文件 / 静态库 / Web应用 / ...
+- **依赖**：所有编程子代理完成后执行
 
 ### 启动命令
 
 > 在 Claude 对话中复制粘贴以下命令启动子代理：
 
+**编程子代理（可并行）：**
 ```
-使用 python-agent 执行 proposal_id: python-agent-01
+使用 python-agent 执行 proposal_id: xxx-python-agent
 ```
 
 ```
-使用 rust-agent 执行 proposal_id: rust-agent-01
+使用 rust-agent 执行 proposal_id: xxx-rust-agent
+```
+
+**构建子代理（编程子代理完成后执行）：**
+```
+使用 build-agent 执行 proposal_id: xxx-build-agent
 ```
 
 （根据实际分工表生成对应命令）
