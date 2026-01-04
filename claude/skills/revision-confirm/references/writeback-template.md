@@ -1,6 +1,12 @@
 # 回写模板（追加到 draft-plan.md）
 
-> 说明：请把本节追加到 `Record/plan/draft-plan.md` 末尾。此文件用于Claude与Codex之间的"通讯"，用户确认选项直接告知用户即可，不写入文件。
+> 说明：请把本节追加到 `Record/plan/draft-plan.md` 末尾。此文件用于Claude与Codex之间的"通讯"。
+
+## 硬性禁止
+
+- **禁止修改 status 字段**
+- **禁止写入"用户最终确认"章节**
+- **禁止代替 Codex 执行任何确认操作**
 
 ```markdown
 ## Claude确认意见
@@ -29,7 +35,7 @@
 - 原因（中文）: ...
 ```
 
-## 回写后的下一步（直接告知用户，不写入文件）
+## 回写后的下一步（直接告知，不写入文件）
 
-- **如果status=ready**：直接告知用户可以进入最终确认，让用户选择三选一
-- **如果status=need_revision**：告知用户需要通知Codex再次修订，并说明原因
+- **如果status=ready**：告知"请将草案交给 Codex 执行 plan-finalize"
+- **如果status=need_revision**：告知需要通知Codex再次修订，并说明原因
