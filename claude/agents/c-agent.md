@@ -53,3 +53,32 @@ model: inherit
 ##执行边界
 - 严格按proposal的allowed_paths/forbidden_patterns执行，不得越界
 - 发现缺工具链或需要新增依赖：先AskUserQuestion请求用户确认
+
+##完成流程（必须执行）
+
+任务完成后必须依次执行：
+
+1. **编译验证**
+   - 执行编译命令（如`make`、`gcc`等，按proposal指定）
+   - 确保无编译错误
+   - 如有错误，修复后重新验证
+
+2. **本地git提交**
+   - 提交本次修改（禁止AI署名）
+   - commit message格式：`[proposal_id] 简要描述`
+
+3. **写入record.md**
+   - 追加到`Record/record.md`：
+     ```markdown
+     ## YYYY-MM-DD HH:MM [proposal_id] 执行完成
+     - 子代理：c-agent
+     - 完成内容：{简要列表}
+     - 编译状态：通过/失败（附错误摘要）
+     - commit: {commit hash}
+     ```
+
+4. **输出完成报告**
+   - 列出完成的功能点
+   - 编译结果
+   - commit信息
+   - 告知用户通知Codex进行代码审核
