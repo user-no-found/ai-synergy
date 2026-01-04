@@ -10,40 +10,21 @@ doc_type: plan
 plan_version: ""
 status: draft
 created_at: ISO8601
-project_root: "<由用户确认的项目根目录>"
+project_root: "<确认的项目根目录>"
 ---
 
 # 预定清单（草案）
 
-## 需求摘要（3-7条）
-- ...
+## 详细需求描述
 
-## 预期流程（最小闭环）
-- 循环A：规划 -> 用户确认 -> 冻结 v1
-- 循环B：openspec+提案 -> 子代理执行 -> Codex审核 -> 用户确认 -> 用户手动分发
+<!-- 完整记录需求，供 Claude 分析用 -->
 
-## 环境检查（对照 ~/environment.md）
-- 已具备：...
-- 缺失：...
-- 安装负责人：用户
-- 校验方式：...
+## 待澄清问题
 
-## 子代理需求与分工（运行槽位）
-- 需要的子代理：python-agent / rust-agent / ...
-- 并行运行槽位示例：python-agent 需要 2 个运行槽位（python-agent-01 / python-agent-02），表示用户开两个同名 python-agent 会话
-
-## 子代理存在性确认（对照 registry）
-- registry: ~/.codex/skills/agents-registry/references/registry.yaml
-- 核对结论：...
-
-## scope 轮廓（初版）
-- allowed_paths: ...
-- forbidden_patterns: ...
-- dependencies: ...
-- max_review_rounds: ...
-
-## 用户确认选项
-- 同意按当前方案执行 / 需要调整后再确认 / 暂停取消
+<!-- 需要进一步确认的点 -->
+- 技术栈选择：...
+- 部署方式：...
+- 其他：...
 ```
 
 ## `Record/state.json`（最小骨架）
@@ -78,7 +59,7 @@ project_root: "<由用户确认的项目根目录>"
 
 | 类型 | 触发时机 | 记录内容 |
 |------|---------|---------|
-| 需求提出 | project-bootstrap | 用户需求摘要 |
+| 需求提出 | project-bootstrap | 需求摘要 |
 | 方案确定 | plan-finalize | 方案版本、任务数 |
 | 子代理完成 | 子代理提交后 | commit hash、提交信息 |
 | 编译结果 | build-agent完成 | 成功/失败、产出/错误摘要 |
