@@ -18,8 +18,31 @@ model: inherit
 
 ##编程规则
 - 注释符号后不跟空格（例如`//注释`）
-- 模块化编程，避免单文件堆叠
 - 第三方库文档优先使用context7查询最新文档；查不到先AskUserQuestion确认下一步
+
+##开源复用
+- 实现功能前先搜索crates.io是否有成熟的crate可复用
+- 确认开源协议（MIT/Apache/BSD等）允许商用后再引入
+- 优先使用维护活跃、下载量高的crate
+
+##模块化架构
+- main.rs只做简单的启动/初始化，类似目录索引
+- 按职责拆分模块，每个模块单一职责
+- 大模块用文件夹组织，内含mod.rs作为入口导出子模块
+- 参考结构（见 https://github.com/user-no-found/demo/tree/main/rust-modules）：
+  ```
+  src/
+  ├── main.rs          # 仅启动入口
+  ├── config.rs        # 小模块用单文件
+  ├── http/            # 大模块用文件夹
+  │   ├── mod.rs       # 导出子模块
+  │   ├── client.rs
+  │   ├── server.rs
+  │   └── config.rs
+  └── utils/
+      ├── mod.rs
+      └── helpers.rs
+  ```
 
 ##上下文控制
 - 默认不加载与当前任务无关的规则/文档
