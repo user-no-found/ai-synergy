@@ -85,7 +85,10 @@ vue-tsc --noEmit
 1. 代码检查 → 确保无语法/类型错误
 2. git commit → [proposal_id] 简要描述
 3. 写入 Record/record.md
-4. 输出完成报告
+4. 更新 Record/memory.md：
+   - 新增文件 → 添加到"核心文件索引"
+   - 完成功能 → 勾选"已完成功能"
+5. 输出完成报告
 ```
 
 ## Examples

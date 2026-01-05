@@ -74,7 +74,10 @@ model: inherit
 2. 更新相关文档
 3. git commit → [proposal_id] 简要描述
 4. 写入 Record/record.md
-5. 输出完成报告
+5. 更新 Record/memory.md：
+   - 新增文档 → 添加到"核心文件索引"
+   - 完成功能 → 勾选"已完成功能"
+6. 输出完成报告
 ```
 
 ## Examples

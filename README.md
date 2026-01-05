@@ -157,6 +157,7 @@ ls ~/.codex/skills/
 ## 致谢
 
 - [vibe-coding-cn](https://github.com/2025Emma/vibe-coding-cn) - 质量门禁、八荣八耻等开发理念参考
+- [MetaGPT](https://github.com/FoundationAgents/MetaGPT) - 跨会话记忆系统设计参考
 
 ## License
 
