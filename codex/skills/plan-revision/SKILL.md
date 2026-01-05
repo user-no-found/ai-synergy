@@ -1,28 +1,84 @@
 ---
 name: plan-revision
-description: 规划修订导航。触发：用户通知"Claude已分析完成"或需要Codex查看Claude复审结果并修订预定清单时使用；默认先读取项目内 `Record/plan/draft-plan.md` 的"Claude复审补充"章节，对分析结果进行评估（认可/不认可），不认可处必须说明理由并修订；按需读取 references。
+description: 规划修订导航。触发：用户通知"Claude已分析完成"或需要Codex查看Claude复审结果并修订预定清单时使用；评估Claude分析结果并修订draft-plan.md。
 metadata:
   short-description: Codex查看Claude分析并修订规划
-  tags:
-    - workflow
-    - planning
-    - revision
-    - governance
+  tags: [workflow, planning, revision]
 ---
 
-# 规划修订（Plan Revision）
+# plan-revision
 
-用于Codex查看Claude的复审分析结果，进行评估与修订，形成可供用户确认的最终规划。
+规划修订，Codex查看Claude的复审分析结果，进行评估与修订，形成可供用户确认的最终规划。
 
-## 核心原则（必须遵守）
+## When to Use This Skill
 
-- 必须先读取`Record/plan/draft-plan.md`，特别是"Claude复审补充"章节
-- 对Claude的每项分析必须明确表态：认可/不认可/部分认可
+- 用户通知"Claude已分析完成"
+- 需要Codex查看Claude复审结果
+- 循环A规划阶段的修订环节
+
+## Not For / Boundaries
+
+**不做**：
+- 不创建Record结构（由 project-bootstrap 负责）
+- 不执行Claude的复审（由 draft-plan-review 负责）
+- 不定稿方案（由 plan-finalize 负责）
+
+**必需输入**：
+- `Record/plan/draft-plan.md` 存在且包含"Claude复审补充"章节
+- 项目根目录已确认
+
+缺少输入时询问用户。
+
+## Quick Reference
+
+### 硬性规则
+
+```
+- 必须先读取 draft-plan.md 的"Claude复审补充"章节
+- 对Claude每项分析必须明确表态：认可/不认可/部分认可
 - 不认可的点必须说明理由（中文）
-- 修订后必须更新`draft-plan.md`，形成可供用户确认的版本
+- 修订后必须更新 draft-plan.md
 - 项目根目录不明确时必须先询问用户
+```
 
-## References（按触发条件）
+### 执行步骤
 
-- **触发条件：** 需要评估Claude分析并修订 -> `references/revision-workflow.md`
-- **触发条件：** 需要回写修订结果 -> `references/writeback-template.md`
+```
+1. 读取 draft-plan.md 的"Claude复审补充"章节
+2. 逐项评估Claude的分析结果
+3. 对不认可的点说明理由
+4. 回写修订结果到 draft-plan.md 的"Codex修订意见"章节
+5. 更新 record.md + memory.md
+6. 告知用户修订完成，引导进入 revision-confirm
+```
+
+## Examples
+
+### Example 1: 全部认可
+
+- **输入**: Claude分析结果合理
+- **步骤**: 读取分析 → 逐项评估(全部认可) → 回写"全部认可" → 告知用户
+- **验收**: draft-plan.md 包含"Codex修订意见：全部认可"
+
+### Example 2: 部分不认可
+
+- **输入**: Claude某项分析有问题
+- **步骤**: 读取分析 → 逐项评估 → 对不认可项说明理由 → 回写修订意见
+- **验收**: draft-plan.md 包含具体不认可理由和修订建议
+
+### Example 3: 需要补充信息
+
+- **输入**: Claude分析缺少关键信息
+- **步骤**: 读取分析 → 发现信息不足 → 回写"需补充xxx信息" → 告知用户
+- **验收**: draft-plan.md 标注需补充的信息，用户知道下一步
+
+## References
+
+- `references/revision-workflow.md` - 评估与修订流程
+- `references/writeback-template.md` - 回写修订结果模板
+
+## Maintenance
+
+- 来源：双AI协同开发方案
+- 最后更新：2026-01-05
+- 已知限制：仅修订规划，不执行代码
