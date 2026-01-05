@@ -154,6 +154,10 @@ ls ~/.codex/skills/
 3. 或直接从镜像恢复：cp ~/ai-synergy/... ~/.codex/... 或 ~/.claude/...
 ```
 
+## 致谢
+
+- [vibe-coding-cn](https://github.com/2025Emma/vibe-coding-cn) - 质量门禁、八荣八耻等开发理念参考
+
 ## License
 
 MIT
