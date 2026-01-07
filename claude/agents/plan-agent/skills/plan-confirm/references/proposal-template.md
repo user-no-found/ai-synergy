@@ -223,7 +223,7 @@ git commit -m "feat: {一句话描述}"
 ### 提交后通知
 
 ```
-提案 {proposal_id} 已完成并本地提交，请通知 Codex 审核。
+提案 {proposal_id} 已完成并本地提交，请通知 plan-agent 审核。
 ```
 
 ### 追加项目记录

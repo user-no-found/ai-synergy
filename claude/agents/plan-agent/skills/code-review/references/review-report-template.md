@@ -6,7 +6,7 @@ doc_type: review
 plan_version: {plan_version}
 review_at: {ISO8601}
 status: passed | failed | passed_with_warnings
-reviewer: Codex
+reviewer: plan-agent
 ---
 
 # 代码审核报告
@@ -137,7 +137,7 @@ reviewer: Codex
 **修复流程**：
 1. 用户通知对应子代理修复问题
 2. 子代理修复完成后通知用户
-3. 用户通知 Codex 重新审核
+3. 用户通知 plan-agent 重新审核
 ```
 
 ---
@@ -150,7 +150,7 @@ doc_type: review
 plan_version: {plan_version}
 review_at: {ISO8601}
 status: passed
-reviewer: Codex
+reviewer: plan-agent
 ---
 
 # 代码审核报告

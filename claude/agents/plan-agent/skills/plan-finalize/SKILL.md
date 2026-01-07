@@ -73,7 +73,7 @@ metadata:
 3. 子代理确认 → 对照 registry.yaml，缺失则阻塞
 4. 编译配置确认 → 确认构建命令和目标
 5. 生成确定方案 → 写入 Record/plan/{plan_version}-final.md
-6. 输出确定方案 → 更新 record.md + memory.md，告知用户
+6. 输出确定方案 → 更新 record.md + Memory/plan-agent.md，告知用户
 ```
 
 ## Examples

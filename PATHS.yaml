@@ -6,69 +6,45 @@
 schema_version: 1
 
 paths:
-  # ========== Codex Skills ==========
-  - mirror_path: ~/ai-synergy/codex/skills/project-bootstrap
-    real_path: ~/.codex/skills/project-bootstrap
-    kind: skill
+  # ========== 核心子代理（三方协作） ==========
+  - mirror_path: ~/ai-synergy/claude/agents/plan-agent
+    real_path: ~/.claude/agents/plan-agent
+    kind: agent
     managed_by: ai-agent
-    note: 项目启动与落盘导航
+    note: 规划子代理（含6个内部skills）
 
-  - mirror_path: ~/ai-synergy/codex/skills/plan-revision
-    real_path: ~/.codex/skills/plan-revision
-    kind: skill
+  - mirror_path: ~/ai-synergy/claude/agents/analysis-agent
+    real_path: ~/.claude/agents/analysis-agent
+    kind: agent
     managed_by: ai-agent
-    note: 规划修订导航
+    note: 分析子代理（含2个内部skills）
 
-  - mirror_path: ~/ai-synergy/codex/skills/plan-finalize
-    real_path: ~/.codex/skills/plan-finalize
-    kind: skill
+  - mirror_path: ~/ai-synergy/claude/agents/neutral-agent
+    real_path: ~/.claude/agents/neutral-agent
+    kind: agent
     managed_by: ai-agent
-    note: 方案定稿导航（6步）
-
-  - mirror_path: ~/ai-synergy/codex/skills/plan-confirm
-    real_path: ~/.codex/skills/plan-confirm
-    kind: skill
-    managed_by: ai-agent
-    note: 方案确认导航（5步）
-
-  - mirror_path: ~/ai-synergy/codex/skills/code-review
-    real_path: ~/.codex/skills/code-review
-    kind: skill
-    managed_by: ai-agent
-    note: 代码审核导航（7步）
-
-  - mirror_path: ~/ai-synergy/codex/skills/project-complete
-    real_path: ~/.codex/skills/project-complete
-    kind: skill
-    managed_by: ai-agent
-    note: 项目完成导航（6步）
-
-  - mirror_path: ~/ai-synergy/codex/skills/build-report
-    real_path: ~/.codex/skills/build-report
-    kind: skill
-    managed_by: ai-agent
-    note: 编译报告模板
-
-  - mirror_path: ~/ai-synergy/codex/skills/agents-registry
-    real_path: ~/.codex/skills/agents-registry
-    kind: skill
-    managed_by: ai-agent
-    note: 子代理登记表
+    note: 仲裁子代理（含1个内部skill）
 
   # ========== Claude Skills ==========
   - mirror_path: ~/ai-synergy/claude/skills/draft-plan-review
     real_path: ~/.claude/skills/draft-plan-review
     kind: skill
     managed_by: ai-agent
-    note: 预定清单复审
+    note: 预定清单复审（引导至analysis-agent）
 
   - mirror_path: ~/ai-synergy/claude/skills/revision-confirm
     real_path: ~/.claude/skills/revision-confirm
     kind: skill
     managed_by: ai-agent
-    note: 修订确认导航
+    note: 修订确认导航（引导至analysis-agent）
 
-  # ========== Claude Agents ==========
+  - mirror_path: ~/ai-synergy/claude/skills/build-report
+    real_path: ~/.claude/skills/build-report
+    kind: skill
+    managed_by: ai-agent
+    note: 编译报告模板（build-agent使用）
+
+  # ========== 实现子代理 ==========
   - mirror_path: ~/ai-synergy/claude/agents/python-agent.md
     real_path: ~/.claude/agents/python-agent.md
     kind: agent
@@ -93,6 +69,7 @@ paths:
     managed_by: ai-agent
     note: UI执行子代理
 
+  # ========== 辅助子代理 ==========
   - mirror_path: ~/ai-synergy/claude/agents/doc-agent.md
     real_path: ~/.claude/agents/doc-agent.md
     kind: agent
@@ -135,9 +112,3 @@ paths:
     kind: config
     managed_by: ai-agent
     note: Claude Code全局指令
-
-  - mirror_path: ~/ai-synergy/codex/AGENTS.md
-    real_path: ~/.codex/AGENTS.md
-    kind: config
-    managed_by: ai-agent
-    note: OpenAI Codex全局指令

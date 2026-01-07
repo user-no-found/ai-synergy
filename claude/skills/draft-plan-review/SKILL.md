@@ -1,8 +1,8 @@
 ---
 name: draft-plan-review
-description: 复审 Codex 生成的"预定清单（草案）"。触发：用户让你复审/分析/补全 Codex 的项目规划草案时使用；读取 draft-plan.md 并回写分析结果。
+description: 复审 plan-agent 生成的"预定清单（草案）"。触发：用户让你复审/分析/补全 plan-agent 的项目规划草案时使用；读取 draft-plan.md 并回写分析结果。
 metadata:
-  short-description: Claude复审Codex草案（引导至analysis-agent）
+  short-description: analysis-agent复审plan-agent草案（引导至analysis-agent）
   tags: [workflow, planning, review, redirect]
 ---
 

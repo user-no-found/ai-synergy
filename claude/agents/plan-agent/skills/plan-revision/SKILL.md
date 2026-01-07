@@ -1,8 +1,8 @@
 ---
 name: plan-revision
-description: 规划修订导航。触发：用户通知"Claude已分析完成"或需要Codex查看Claude复审结果并修订预定清单时使用；评估Claude分析结果并修订draft-plan.md。
+description: 规划修订导航。触发：用户通知"analysis-agent已分析完成"或需要plan-agent查看analysis-agent复审结果并修订预定清单时使用；评估analysis-agent分析结果并修订draft-plan.md。
 metadata:
-  short-description: Codex查看Claude分析并修订规划
+  short-description: plan-agent查看analysis-agent分析并修订规划
   access: plan-agent-internal
   tags: [workflow, planning, revision]
 ---
@@ -11,12 +11,12 @@ metadata:
 
 > **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
-规划修订，Codex查看Claude的复审分析结果，进行评估与修订，形成可供用户确认的最终规划。
+规划修订，plan-agent查看analysis-agent的复审分析结果，进行评估与修订，形成可供用户确认的最终规划。
 
 ## When to Use This Skill
 
-- 用户通知"Claude已分析完成"
-- 需要Codex查看Claude复审结果
+- 用户通知"analysis-agent已分析完成"
+- 需要plan-agent查看analysis-agent复审结果
 - 循环A规划阶段的修订环节
 
 ## Not For / Boundaries
@@ -63,8 +63,8 @@ metadata:
 1. 读取 draft-plan.md 的"Claude复审补充"章节
 2. 逐项评估Claude的分析结果
 3. 对不认可的点说明理由
-4. 回写修订结果到 draft-plan.md 的"Codex修订意见"章节
-5. 更新 record.md + memory.md
+4. 回写修订结果到 draft-plan.md 的"plan-agent修订意见"章节
+5. 更新 record.md + Memory/plan-agent.md
 6. 告知用户修订完成，引导进入 revision-confirm
 ```
 
@@ -74,7 +74,7 @@ metadata:
 
 - **输入**: Claude分析结果合理
 - **步骤**: 读取分析 → 逐项评估(全部认可) → 回写"全部认可" → 告知用户
-- **验收**: draft-plan.md 包含"Codex修订意见：全部认可"
+- **验收**: draft-plan.md 包含"plan-agent修订意见：全部认可"
 
 ### Example 2: 部分不认可
 

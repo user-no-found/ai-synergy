@@ -15,13 +15,19 @@
                     ┌─────────────────┐
                     │      用户       │
                     └────────┬────────┘
-                             │
+                             │ 新项目需求
+                             ▼
+                    ┌─────────────────┐
+                    │  Claude 主对话  │  ← 全局控制器
+                    │  (自动化调度)   │
+                    └────────┬────────┘
+                             │ Task 工具调用
         ┌────────────────────┼────────────────────┐
         │                    │                    │
         ▼                    ▼                    ▼
 ┌───────────────┐   ┌───────────────┐   ┌───────────────┐
 │  plan-agent   │   │analysis-agent│   │neutral-agent │
-│   (规划)      │◄─►│   (分析)      │◄─►│   (仲裁)     │
+│   (规划)      │◄─►│   (分析)      │◄─►│  (第三方)    │
 └───────┬───────┘   └───────────────┘   └───────────────┘
         │
         │ 分配任务
@@ -33,6 +39,14 @@
 └─────────────────────────────────────────────────────┘
 ```
 
+### 自动化控制
+
+Claude 主对话作为全局控制器：
+- 识别新项目需求，自动创建 Record/ 目录
+- 使用 Task 工具调用所有子代理
+- 根据子代理返回结果决定下一步操作
+- 仅在需要用户输入时暂停询问
+
 ### 三方独立思考
 
 plan-agent、analysis-agent、neutral-agent 三个核心子代理：
@@ -40,22 +54,85 @@ plan-agent、analysis-agent、neutral-agent 三个核心子代理：
 - 可以互相否定对方的结论
 - 可以否定用户的决定（需写明理由）
 - 技术上有严重问题时坚持异议
+- **均为固定成员**，每轮讨论都参与
 
-### 双循环工作流
+## 双循环工作流
 
-**循环A（规划阶段）**
+### 循环A（规划阶段 - 自动化）
+
 ```
-project-bootstrap → analysis-agent → plan-revision → analysis-agent → plan-finalize
-   plan-agent        (草案复审)       plan-agent      (修订确认)       plan-agent
-                         ↓                               ↓
-                   neutral-agent                   neutral-agent
-                   (可选：仲裁)                    (可选：仲裁)
+用户提出新项目需求
+        │
+        ▼
+Claude 主对话：创建 Record/，写入需求
+        │
+        ▼
+┌───────────────────────────────────────┐
+│            循环A 开始                  │
+│                                       │
+│  ┌─→ Task: plan-agent (生成/修订草案)  │
+│  │           │                        │
+│  │           ▼                        │
+│  │   Task: analysis-agent (分析草案)   │
+│  │           │                        │
+│  │           ▼                        │
+│  │   Task: neutral-agent (独立分析)    │
+│  │           │                        │
+│  │           ▼                        │
+│  │   Claude 检查三方结果：              │
+│  │     ├─ has_objection → 继续循环 ──┘│
+│  │     ├─ need_info → 询问用户        │
+│  │     └─ 三方无分歧 → 询问用户确认    │
+│  │                                    │
+└──┴────────────────────────────────────┘
+        │
+        ▼ 用户同意草案
+Task: plan-agent (定稿)
+        │
+        ├─→ need_env → Task: env-agent → 循环
+        ├─→ need_sub → Task: sub-agent → 循环
+        └─→ success → 创建 openspec + impl.md → 结束循环A
 ```
 
-**循环B（执行阶段）**
+### 循环B（执行阶段 - 自动化）
+
 ```
-plan-confirm → 子代理执行 → build-agent → code-review → project-complete
- plan-agent     各实现子代理   build-agent   plan-agent     plan-agent
+impl.md 任务表
+        │
+        ▼
+按依赖分组并发调用编程子代理
+        │
+        ▼ 全部完成
+Task: build-agent 编译
+        │
+        ├─→ failed → Task: plan-agent (fix) → 原子代理修复 → 循环
+        │
+        └─→ success → Task: plan-agent (review) 代码审核
+                │
+                ├─→ has_issues → Task: plan-agent (fix) → 循环
+                │
+                └─→ success → 询问用户：安全分析？
+                        │
+                        ├─→ 是 → Task: sec-agent
+                        │       ├─→ has_issues → 循环
+                        │       └─→ success ─┐
+                        │                    │
+                        └─→ 否 ──────────────┘
+                                             │
+                                             ▼
+                        Task: plan-agent (complete) → git push（远程）
+```
+
+### 用户异议处理
+
+```
+用户提出流程问题（越权、循环卡死、状态不一致等）
+        │
+        ▼
+Task: ai-agent (diagnose) → 返回诊断 + 方案选项
+        │
+        ▼
+用户选择方案 → Task: ai-agent (fix) → 修改 + 同步镜像
 ```
 
 ## 目录结构
@@ -68,21 +145,20 @@ ai-synergy/
 ├── PATHS.yaml          # 镜像路径映射
 ├── CHANGES/            # 变更记录（回滚用）
 └── claude/
-    ├── CLAUDE.md       # Claude全局指令
-    ├── skills/         # Claude skills（引导至子代理）
-    ├── prompts/        # 可复用提示词
+    ├── CLAUDE.md       # Claude全局指令（主控制逻辑）
+    ├── skills/         # Claude skills
     └── agents/         # Claude子代理定义
         ├── plan-agent/       # 规划子代理（含内部skills）
-        ├── analysis-agent/   # 分析子代理（含内部skills）
-        ├── neutral-agent/    # 仲裁子代理（含内部skills）
+        ├── analysis-agent/   # 分析子代理
+        ├── neutral-agent/    # 第三方分析子代理
         ├── python-agent.md   # Python实现
         ├── rust-agent.md     # Rust实现
         ├── c-agent.md        # C语言实现
         ├── ui-agent.md       # 前端UI实现
+        ├── doc-agent.md      # 文档更新
         ├── build-agent.md    # 编译构建
         ├── sec-agent.md      # 安全审查
         ├── env-agent.md      # 环境安装
-        ├── doc-agent.md      # 文档更新
         ├── ai-agent.md       # 全局治理
         └── sub-agent.md      # 子代理管理
 ```
@@ -98,13 +174,15 @@ ai-synergy/
     │   ├── draft-plan.md           # 草案（含各方分析章节）
     │   ├── {version}-discussion.md # 归档的讨论记录
     │   └── {version}-final.md      # 确定方案
-    ├── Memory/                     # 子代理记忆目录
-    │   ├── plan-agent.md           # 规划子代理记忆
-    │   ├── analysis-agent.md       # 分析子代理记忆
-    │   ├── neutral-agent.md        # 仲裁子代理记忆
-    │   ├── build-agent.md          # 构建子代理记忆
-    │   ├── python-agent-01.md      # Python实现子代理01
-    │   └── ...                     # 其他子代理记忆
+    ├── Memory/                     # 记忆目录
+    │   ├── memory.md               # Claude 主对话记忆
+    │   ├── plan-agent.md
+    │   ├── analysis-agent.md
+    │   ├── neutral-agent.md
+    │   └── {slot}.md               # 编程子代理记忆（如 python-agent-01.md）
+    ├── env.md                      # 环境安装任务（临时）
+    ├── sub.md                      # 子代理创建任务（临时）
+    ├── impl.md                     # 实现任务表
     ├── state.json                  # 项目状态机
     └── record.md                   # 事件日志
 ```
@@ -159,44 +237,51 @@ ls ~/.claude/skills/
 
 ## 子代理清单
 
-### 核心规划子代理
+### 核心规划子代理（循环A）
 
-| 子代理 | 触发条件 | 职责 |
+| 子代理 | 调用方式 | 职责 |
 |--------|----------|------|
-| plan-agent | 启动策划 | 项目规划、分工、门禁、审核、归档 |
-| analysis-agent | 启动分析/复审草案/确认修订 | 草案复审、修订确认 |
-| neutral-agent | 启动仲裁/中立分析 | 第三方中立评估与仲裁 |
+| plan-agent | Claude Task 调用 | 生成/修订/定稿草案，分配修复，代码审核，归档提交 |
+| analysis-agent | Claude Task 调用 | 分析草案，提供技术评估和风险分析 |
+| neutral-agent | Claude Task 调用 | 独立分析，提供第三方视角评估 |
 
-### 实现子代理
+### plan-agent 模式
 
-| 子代理 | 触发条件 | 职责 |
+| 模式 | 触发条件 | 职责 |
+|------|----------|------|
+| `draft` | 循环A | 生成/修订草案 |
+| `finalize` | 用户同意草案 | 定稿方案 |
+| `fix` | 编译/审核有错误 | 分配修复提案（谁写谁修） |
+| `review` | 编译成功 | 代码审核（屎山检查） |
+| `complete` | 审核/分析通过 | 归档 + git push（远程） |
+
+### 实现子代理（循环B）
+
+| 子代理 | 调用方式 | 职责 |
 |--------|----------|------|
-| python-agent | Python实现任务 | Python代码实现 |
-| rust-agent | Rust实现任务 | Rust代码实现 |
-| c-agent | C语言实现任务 | C代码实现 |
-| ui-agent | 前端UI实现任务 | 前端界面/交互实现 |
+| python-agent | Claude Task 调用 | Python代码实现 |
+| rust-agent | Claude Task 调用 | Rust代码实现 |
+| c-agent | Claude Task 调用 | C代码实现 |
+| ui-agent | Claude Task 调用 | 前端界面/交互实现 |
+| doc-agent | Claude Task 调用 | 文档更新 |
 
 ### 辅助子代理
 
-| 子代理 | 触发条件 | 职责 |
+| 子代理 | 调用方式 | 职责 |
 |--------|----------|------|
-| build-agent | 编译构建任务 | 编译、构建与产物生成 |
-| sec-agent | 安全审查任务 | 安全风险识别、修复建议 |
-| env-agent | 环境安装任务 | 安装项目依赖环境 |
-| doc-agent | 文档更新任务 | 更新文档、changelog |
-| ai-agent | 全局统筹 | 维护AI协同方案配置 |
-| sub-agent | 子代理管理 | 创建/补齐子代理并登记 |
+| build-agent | Claude Task 调用 | 编译、构建与产物生成 |
+| sec-agent | Claude Task 调用 | 安全风险识别、修复建议 |
+| env-agent | Claude Task 调用 | 安装项目依赖环境 |
+| sub-agent | Claude Task 调用 | 创建/补齐子代理并登记 |
+| ai-agent | Claude Task 调用 | 全局治理，处理用户异议 |
 
-## plan-agent 内部 Skills
+### ai-agent 模式
 
-| Skill | 触发条件 |
-|-------|---------|
-| project-bootstrap | 用户开始新项目 |
-| plan-revision | 评估analysis-agent分析 |
-| plan-finalize | 用户确认方案 |
-| plan-confirm | 用户开始执行 |
-| code-review | 编译通过后 |
-| project-complete | 项目完成 |
+| 模式 | 触发条件 | 职责 |
+|------|----------|------|
+| `diagnose` | 用户提出流程问题 | 诊断问题，输出修改方案 |
+| `fix` | 用户选择方案后 | 执行修改，同步镜像 |
+| `audit` | 定期检查或用户要求 | 审计配置一致性 |
 
 ## 独立思考原则
 
@@ -214,9 +299,21 @@ ls ~/.claude/skills/
 
 ## 核心规则
 
-- **Git操作**：子代理本地commit，仅project-complete允许push
-- **冲突预防**：proposal中的`allowed_paths`确保文件排他，`depends_on`确保串行依赖
-- **变更门禁**：ai-agent修改前必须输出提案并等待用户确认
+### Git 操作规则
+
+| 阶段 | 操作 | 范围 |
+|------|------|------|
+| 编程子代理完成 | git commit | 本地 |
+| 修复子代理完成 | git commit | 本地 |
+| plan-agent (complete) | git push | **远程**（唯一） |
+
+### 其他规则
+
+- **禁止 AI 署名**：git commit 禁止添加 Co-Authored-By 等
+- **冲突预防**：proposal 中的 `allowed_paths` 确保文件排他
+- **变更门禁**：ai-agent 修改前必须输出提案并等待用户确认
+- **sudo 规则**：env-agent 禁止自动执行 sudo，必须返回让用户手动执行
+- **质量门禁**：sub-agent 创建的子代理必须通过质量门禁（>=24/32）
 
 ## 回滚
 

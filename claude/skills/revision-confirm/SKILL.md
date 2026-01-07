@@ -1,8 +1,8 @@
 ---
 name: revision-confirm
-description: 修订确认导航。触发：您通知"Codex已修订完成"或需要Claude查看Codex修订意见时使用；读取 draft-plan.md 的"Codex修订意见"章节，分析后引导下一步。
+description: 修订确认导航。触发：您通知"plan-agent已修订完成"或需要analysis-agent查看plan-agent修订意见时使用；读取 draft-plan.md 的"plan-agent修订意见"章节，分析后引导下一步。
 metadata:
-  short-description: Claude确认Codex修订（引导至analysis-agent）
+  short-description: analysis-agent确认plan-agent修订（引导至analysis-agent）
   tags: [workflow, planning, confirm, redirect]
 ---
 

@@ -44,19 +44,21 @@ metadata:
 项目根目录/
 └── Record/
     ├── plan/draft-plan.md   # 预定清单草案
+    ├── Memory/              # 子代理记忆目录
+    │   ├── plan-agent.md    # 规划子代理记忆
+    │   └── ...              # 其他子代理记忆
     ├── state.json           # 项目状态机
-    ├── record.md            # 事件日志
-    └── memory.md            # 跨会话记忆
+    └── record.md            # 事件日志
 ```
 
 ### 执行步骤
 
 ```
 1. 确认项目根目录（询问用户）
-2. 创建 Record/plan/
+2. 创建 Record/plan/ 和 Record/Memory/
 3. 生成 draft-plan.md（需求+待澄清问题）
 4. 初始化 state.json
-5. 创建 record.md + memory.md
+5. 创建 record.md + Memory/plan-agent.md
 6. 输出下一步指令
 ```
 

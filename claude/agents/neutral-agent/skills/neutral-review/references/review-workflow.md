@@ -11,8 +11,8 @@
    - 如果不存在：用 AskUserQuestion 确认路径
 
 3) 读取策略
-   - 必须读取：草案原文、"Claude复审补充"、"Codex修订意见"
-   - 可选读取："Claude确认意见"（如有）
+   - 必须读取：草案原文、"analysis-agent复审补充"、"plan-agent修订意见"
+   - 可选读取："analysis-agent确认意见"（如有）
    - 对照读取：了解两方的完整立场
 
 ## 1) 识别共识与分歧

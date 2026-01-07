@@ -30,7 +30,7 @@ metadata:
 
 **必需输入**：
 - `Record/plan/draft-plan.md` 存在
-- 至少包含"Claude复审补充"或"Codex修订意见"章节之一
+- 至少包含"analysis-agent复审补充"或"plan-agent修订意见"章节之一
 - 项目根目录已确认
 
 缺少输入时用 AskUserQuestion 询问。
@@ -68,9 +68,9 @@ metadata:
 1. 确认项目根目录
 2. 读取 draft-plan.md 的以下章节：
    - 草案原文
-   - "Claude复审补充"（analysis-agent）
-   - "Codex修订意见"（plan-agent）
-   - "Claude确认意见"（如有）
+   - "analysis-agent复审补充"（analysis-agent）
+   - "plan-agent修订意见"（plan-agent）
+   - "analysis-agent确认意见"（如有）
 3. 识别共识点和分歧点
 4. 对分歧点进行独立技术评估
 5. 用 Edit 工具回写"中立仲裁意见"章节
@@ -138,6 +138,6 @@ metadata:
 
 ## Maintenance
 
-- 来源：双AI协同开发方案
+- 来源：全Claude子代理协同开发方案
 - 最后更新：2026-01-07
 - 已知限制：仅提供仲裁意见，不执行定稿或实现

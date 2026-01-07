@@ -32,7 +32,7 @@ project_root: "<确认的项目根目录>"
 ```json
 {
   "active_plan_version": "",
-  "agents_registry_path": "~/.codex/skills/agents-registry/references/registry.yaml",
+  "agents_registry_path": "~/.claude/agents/plan-agent/skills/agents-registry/references/registry.yaml",
   "environment_path": "~/environment.md",
   "proposals": {}
 }
@@ -64,7 +64,7 @@ project_root: "<确认的项目根目录>"
 | 子代理完成 | 子代理提交后 | commit hash、提交信息 |
 | 编译结果 | build-agent完成 | 成功/失败、产出/错误摘要 |
 | 代码审核 | code-review完成 | 通过/问题数 |
-| 提案修改 | Codex修改提案 | 修改原因、影响范围 |
+| 提案修改 | plan-agent修改提案 | 修改原因、影响范围 |
 | 归档完成 | project-complete步骤2 | commit hash、归档提案数 |
 | 推送远程 | project-complete步骤4 | commit hash、远程分支 |
 | 阻塞事件 | 环境/子代理缺失 | 阻塞原因、解决方式 |

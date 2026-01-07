@@ -1,8 +1,8 @@
 ---
 name: draft-plan-review
-description: 草案复审。触发：plan-agent 调用或用户让你复审/分析/补全 Codex 的项目规划草案时使用；读取 draft-plan.md 并回写分析结果。
+description: 草案复审。触发：plan-agent 调用或用户让你复审/分析/补全 plan-agent 的项目规划草案时使用；读取 draft-plan.md 并回写分析结果。
 metadata:
-  short-description: Claude复审Codex草案
+  short-description: analysis-agent复审plan-agent草案
   access: analysis-agent-internal
   tags: [workflow, planning, review]
 ---
@@ -11,12 +11,12 @@ metadata:
 
 > **访问控制**：此 skill 仅限 analysis-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
-预定清单复审，Claude 分析 Codex 生成的草案，补充技术细节和风险评估。
+预定清单复审，analysis-agent 分析 plan-agent 生成的草案，补充技术细节和风险评估。
 
 ## When to Use This Skill
 
 - plan-agent 调用 analysis-agent 进行草案复审
-- 用户让你复审/分析/补全 Codex 的项目规划草案
+- 用户让你复审/分析/补全 plan-agent 的项目规划草案
 - 用户说"请 Claude 复审"/"分析一下草案"
 - 循环A规划阶段的复审环节
 
@@ -26,8 +26,8 @@ metadata:
 - 不创建 Record 结构（由 project-bootstrap 负责）
 - 不修订方案（由 plan-revision 负责）
 - 不定稿方案（由 plan-finalize 负责）
-- 不修改 Codex 写的草案内容（只能追加"Claude复审补充"章节）
-- 不询问"是否开始实现"（实现由 Codex 分配）
+- 不修改 plan-agent 写的草案内容（只能追加"analysis-agent复审补充"章节）
+- 不询问"是否开始实现"（实现由 plan-agent 分配）
 
 **必需输入**：
 - `Record/plan/draft-plan.md` 存在
@@ -46,7 +46,7 @@ metadata:
 - 【必须回写】分析结果必须写入 draft-plan.md 的"Claude复审补充"章节
 - 【禁止只输出】不得只在对话中输出分析结果而不写入文件
 - 【格式要求】"Claude复审补充"章节必须是 markdown 二级标题 `## Claude复审补充`
-- 【禁止修改】不得修改 Codex 写的草案内容，只能追加"Claude复审补充"章节
+- 【禁止修改】不得修改 plan-agent 写的草案内容，只能追加"analysis-agent复审补充"章节
 ```
 
 ### 独立思考原则
@@ -72,7 +72,7 @@ metadata:
 5. 【必须执行】用 Edit 工具将分析结果追加到 draft-plan.md 末尾，格式：
    ## Claude复审补充
    [分析内容]
-6. 更新 record.md + memory.md
+6. 更新 record.md + Memory/analysis-agent.md
 7. 告知用户复审完成，引导进入 plan-revision
 ```
 
@@ -98,7 +98,7 @@ metadata:
 - ...
 
 ### 下一步
-请将草案交给 **Codex** 执行 plan-revision 修订。
+请将草案交给 **plan-agent** 执行 plan-revision 修订。
 ```
 
 **注意**：必须使用 Edit 工具写入文件，不得只在对话中输出。
@@ -107,7 +107,7 @@ metadata:
 
 ### Example 1: 正常复审
 
-- **输入**: plan-agent 调用或用户说"请复审 Codex 的草案"
+- **输入**: plan-agent 调用或用户说"请复审 plan-agent 的草案"
 - **步骤**: 读取 draft-plan.md → 分析 → **用 Edit 工具**回写"Claude复审补充" → 告知用户
 - **验收**: draft-plan.md 文件末尾包含 `## Claude复审补充` 章节
 

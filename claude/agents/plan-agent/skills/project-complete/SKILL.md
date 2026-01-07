@@ -52,7 +52,7 @@ metadata:
 3. 生成变更清单 → 更新 CHANGELOG.md
 4. 项目完成提交与推送 → git commit + push
 5. 更新项目状态 → state.json 状态为 completed
-6. 通知用户 → 输出完成摘要，更新 record.md + memory.md
+6. 通知用户 → 输出完成摘要，更新 record.md + Memory/plan-agent.md
 ```
 
 ## Examples

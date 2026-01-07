@@ -175,8 +175,8 @@ project_root: "<项目根目录>"
 ## 下一步
 
 进入循环B：
-1. Codex创建openspec与提案
+1. plan-agent创建openspec与提案
 2. 用户启动子代理执行任务
-3. Codex进行代码审核
+3. plan-agent进行代码审核
 4. 用户确认审核结果
 ```
