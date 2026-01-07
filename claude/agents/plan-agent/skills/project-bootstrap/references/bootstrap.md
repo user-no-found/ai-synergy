@@ -13,11 +13,12 @@
 
 2) 创建 Record 目录结构（项目内）
    - `Record/plan/`
+   - `Record/Memory/`（子代理记忆目录）
 
 3) 生成并落盘"预定清单（草案）"
    - 文件路径固定：`Record/plan/draft-plan.md`
    - 内容必须包含：
-     - 详细需求描述：完整记录需求，供 Claude 分析用
+     - 详细需求描述：完整记录需求，供 analysis-agent 分析用
      - 待澄清问题：需要进一步确认的点（如技术栈、部署方式等）
 
 4) 初始化项目级状态机文件（可选但推荐）
@@ -34,16 +35,12 @@
      {需求摘要}
      ```
 
-6) 创建项目记忆文件
-   - 文件路径固定：`Record/memory.md`
-   - 写入初始内容（见 templates.md）
-   - 填写"基本信息"章节：
-     - 项目名：从需求或目录名推断
-     - 项目根目录：步骤1确认的路径
-     - 技术栈：从需求中提取，未确定则留空
-     - 创建时间：当前时间
+6) 创建 plan-agent 记忆文件
+   - 文件路径固定：`Record/Memory/plan-agent.md`
+   - 根据 memory-template.md 创建
+   - 填写基本信息：项目名、项目根目录、技术栈、创建时间
 
 7) 输出"下一步指令"
    - 告知：请先审阅 `Record/plan/draft-plan.md`
-   - 如需修改则在此对话中提出，Codex 更新该文件
-   - 确认无误后，请将草案交给 Claude 进行分析（draft-plan-review）
+   - 如需修改则在此对话中提出，plan-agent 更新该文件
+   - 确认无误后，请启动 analysis-agent 进行草案分析

@@ -87,6 +87,28 @@ ai-synergy/
         └── sub-agent.md      # 子代理管理
 ```
 
+## 项目 Record 目录结构
+
+每个项目在根目录下创建 `Record/` 目录：
+
+```
+项目根目录/
+└── Record/
+    ├── plan/
+    │   ├── draft-plan.md           # 草案（含各方分析章节）
+    │   ├── {version}-discussion.md # 归档的讨论记录
+    │   └── {version}-final.md      # 确定方案
+    ├── Memory/                     # 子代理记忆目录
+    │   ├── plan-agent.md           # 规划子代理记忆
+    │   ├── analysis-agent.md       # 分析子代理记忆
+    │   ├── neutral-agent.md        # 仲裁子代理记忆
+    │   ├── build-agent.md          # 构建子代理记忆
+    │   ├── python-agent-01.md      # Python实现子代理01
+    │   └── ...                     # 其他子代理记忆
+    ├── state.json                  # 项目状态机
+    └── record.md                   # 事件日志
+```
+
 ## 快速开始
 
 ### 新设备部署
@@ -209,7 +231,6 @@ ls ~/.claude/skills/
 ## 致谢
 
 - [vibe-coding-cn](https://github.com/2025Emma/vibe-coding-cn) - 质量门禁、八荣八耻等开发理念参考
-- [MetaGPT](https://github.com/FoundationAgents/MetaGPT) - 跨会话记忆系统设计参考
 
 ## License
 

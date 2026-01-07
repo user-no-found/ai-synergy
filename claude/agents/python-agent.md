@@ -35,9 +35,33 @@ Python执行子代理，严格按 proposal scope 实现Python代码，完成后�
 ### 硬性规则
 
 ```
+- 【启动时记忆管理】必须先检查并读取/创建 Record/Memory/python-agent-{nn}.md
+- 【实时更新记忆】执行过程中实时更新记忆文件
 - 禁止 git commit 添加 AI 署名
 - 代码注释、报错信息用中文
 - 注释符号后不跟空格（#注释）
+```
+
+### 启动时记忆管理（必须执行）
+
+```
+1. 确认项目根目录
+2. 检查 Record/Memory/ 目录是否存在，不存在则创建
+3. 根据 proposal 或用户指定确定实例编号（01/02/03...）
+4. 检查 Record/Memory/python-agent-{nn}.md 是否存在：
+   - 不存在：创建记忆文件（记录 proposal_id、负责模块等）
+   - 存在：读取记忆，恢复上下文
+5. 执行过程中实时更新记忆文件
+6. 每次代码变更后追加会话记录摘要
+```
+
+### 实例编号规则
+
+```
+- 首个实例：python-agent-01
+- 多实例时按启动顺序递增：python-agent-02、python-agent-03
+- 编号由 plan-agent 在 proposal 中分配
+- 记忆文件与实例编号一一对应
 ```
 
 ### 开源复用（胶水开发原则）
@@ -90,9 +114,9 @@ python -c "import src.main"
 1. 代码检查 → 确保无语法/类型错误
 2. git commit → [proposal_id] 简要描述
 3. 写入 Record/record.md
-4. 更新 Record/memory.md：
-   - 新增文件 → 添加到"核心文件索引"
-   - 完成功能 → 勾选"已完成功能"
+4. 更新 Record/Memory/python-agent-{nn}.md：
+   - 新增文件 → 添加到"实现记录"
+   - 完成功能 → 更新"当前状态"
 5. 输出完成报告
 ```
 

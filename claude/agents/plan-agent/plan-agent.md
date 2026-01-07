@@ -36,6 +36,18 @@ model: inherit
 
 ## Quick Reference
 
+### 启动时记忆管理（必须执行）
+
+```
+1. 确认项目根目录
+2. 检查 Record/Memory/ 目录是否存在，不存在则创建
+3. 检查 Record/Memory/plan-agent.md 是否存在：
+   - 不存在：根据 references/memory-template.md 创建
+   - 存在：读取记忆，恢复上下文
+4. 执行过程中实时更新记忆文件
+5. 每次重要操作后追加会话记录摘要
+```
+
 ### 硬性规则
 
 ```
@@ -100,6 +112,9 @@ skills/
 └── project-complete/    # 项目完成
     ├── SKILL.md
     └── references/
+
+references/
+└── memory-template.md   # 记忆文件模板
 ```
 
 **调用方式**：按流程顺序读取对应 skill 的 SKILL.md 执行。

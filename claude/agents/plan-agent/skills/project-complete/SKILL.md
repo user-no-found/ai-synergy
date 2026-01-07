@@ -41,7 +41,7 @@ metadata:
 - 必须按顺序执行：前置检查 → 归档 → changelog → commit+push → 更新状态 → 通知
 - 仅 project-complete 允许执行 git push
 - 禁止 git commit 添加 AI 署名
-- 必须更新 Record/memory.md 的会话摘要
+- 必须更新 Record/Memory/plan-agent.md 的会话记录摘要
 ```
 
 ### 执行步骤
