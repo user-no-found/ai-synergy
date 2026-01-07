@@ -3,13 +3,13 @@ name: project-complete
 description: 项目完成导航。触发：用户通知"项目完成"或"可以提交了"时使用；执行归档、生成changelog、git commit+push。
 metadata:
   short-description: 项目完成与归档提交
-  access: codex-agent-internal
+  access: plan-agent-internal
   tags: [workflow, complete, git]
 ---
 
 # project-complete
 
-> **访问控制**：此 skill 仅限 codex-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
+> **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
 项目完成，执行归档、生成changelog、git commit+push，更新项目状态。
 

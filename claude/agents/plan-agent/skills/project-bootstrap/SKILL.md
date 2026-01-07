@@ -4,12 +4,12 @@ description: 项目启动与落盘导航。触发：用户开始新项目/首次
 metadata:
   short-description: 项目启动落盘与 Record 结构
   tags: [workflow, record, planning]
-  access: codex-agent-internal
+  access: plan-agent-internal
 ---
 
 # project-bootstrap
 
-> **访问控制**：此 skill 仅限 codex-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
+> **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
 项目启动标准化，确保规划可落盘、可追溯。
 

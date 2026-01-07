@@ -3,13 +3,13 @@ name: plan-revision
 description: 规划修订导航。触发：用户通知"Claude已分析完成"或需要Codex查看Claude复审结果并修订预定清单时使用；评估Claude分析结果并修订draft-plan.md。
 metadata:
   short-description: Codex查看Claude分析并修订规划
-  access: codex-agent-internal
+  access: plan-agent-internal
   tags: [workflow, planning, revision]
 ---
 
 # plan-revision
 
-> **访问控制**：此 skill 仅限 codex-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
+> **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
 规划修订，Codex查看Claude的复审分析结果，进行评估与修订，形成可供用户确认的最终规划。
 

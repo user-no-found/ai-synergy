@@ -3,13 +3,13 @@ name: plan-finalize
 description: 方案定稿导航。触发：用户通知"同意方案"或Claude确认无异议后用户确认时使用；归档讨论、确认环境与子代理、生成确定方案并冻结plan_version。
 metadata:
   short-description: 归档讨论、确认环境与子代理、生成确定方案
-  access: codex-agent-internal
+  access: plan-agent-internal
   tags: [workflow, planning, finalize]
 ---
 
 # plan-finalize
 
-> **访问控制**：此 skill 仅限 codex-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
+> **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
 方案定稿，归档讨论记录、确认环境与子代理、生成确定方案并冻结plan_version。
 

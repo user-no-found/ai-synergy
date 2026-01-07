@@ -3,13 +3,13 @@ name: code-review
 description: 代码审核导航。触发：用户通知"编译通过"或"请审核代码"时使用；对子代理产出的代码进行质量审核、规范检查、越界检查，输出审核报告。
 metadata:
   short-description: 编译通过后进行代码审核
-  access: codex-agent-internal
+  access: plan-agent-internal
   tags: [workflow, review, quality]
 ---
 
 # code-review
 
-> **访问控制**：此 skill 仅限 codex-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
+> **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
 代码审核，对所有子代理产出的代码进行质量审核，输出审核报告供用户确认。
 

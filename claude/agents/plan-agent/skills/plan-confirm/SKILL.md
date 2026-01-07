@@ -3,13 +3,13 @@ name: plan-confirm
 description: 方案确认导航。触发：用户查看确定方案后通知"确认方案"或"开始执行"时使用；初始化openspec、创建提案、输出子代理任务清单与分工。
 metadata:
   short-description: 确认方案后初始化openspec并创建提案
-  access: codex-agent-internal
+  access: plan-agent-internal
   tags: [workflow, planning, openspec, execution]
 ---
 
 # plan-confirm
 
-> **访问控制**：此 skill 仅限 codex-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
+> **访问控制**：此 skill 仅限 plan-agent 内部调用，Claude 主对话和其他子代理不可直接调用。
 
 方案确认，初始化openspec、创建提案、输出子代理任务清单，正式进入循环B执行阶段。
 
