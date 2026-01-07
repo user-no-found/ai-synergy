@@ -22,6 +22,8 @@ metadata:
 - 不创建 Record 结构（由 project-bootstrap 负责）
 - 不修订方案（由 plan-revision 负责）
 - 不定稿方案（由 plan-finalize 负责）
+- 不修改 Codex 写的草案内容（只能追加"Claude复审补充"章节）
+- 不询问"是否开始实现"（实现由 Codex 分配）
 
 **必需输入**：
 - `Record/plan/draft-plan.md` 存在
@@ -40,6 +42,7 @@ metadata:
 - 【必须回写】分析结果必须写入 draft-plan.md 的"Claude复审补充"章节
 - 【禁止只输出】不得只在对话中输出分析结果而不写入文件
 - 【格式要求】"Claude复审补充"章节必须是 markdown 二级标题 `## Claude复审补充`
+- 【禁止修改】不得修改 Codex 写的草案内容，只能追加"Claude复审补充"章节
 ```
 
 ### 执行步骤
