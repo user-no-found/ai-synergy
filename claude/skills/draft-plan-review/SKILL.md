@@ -37,7 +37,9 @@ metadata:
 - 优先读项目内文件：Record/plan/draft-plan.md
 - 项目根目录不明确/文件不存在：必须先用 AskUserQuestion 询问
 - 信息不完整时：先问清楚再改文件（避免把猜测写进文档）
-- 回写目标：追加"Claude复审补充"章节到 draft-plan.md
+- 【必须回写】分析结果必须写入 draft-plan.md 的"Claude复审补充"章节
+- 【禁止只输出】不得只在对话中输出分析结果而不写入文件
+- 【格式要求】"Claude复审补充"章节必须是 markdown 二级标题 `## Claude复审补充`
 ```
 
 ### 执行步骤
@@ -47,26 +49,56 @@ metadata:
 2. 读取 Record/plan/draft-plan.md
 3. 分析草案内容（技术可行性、风险、遗漏）
 4. 不清楚处用 AskUserQuestion 询问
-5. 回写分析结果到"Claude复审补充"章节
+5. 【必须执行】用 Edit 工具将分析结果追加到 draft-plan.md 末尾，格式：
+   ## Claude复审补充
+   [分析内容]
 6. 更新 record.md + memory.md
 7. 告知用户复审完成，引导进入 plan-revision
 ```
+
+### 回写模板（必须使用）
+
+```markdown
+## Claude复审补充
+
+### 已确认决策
+| 问题 | 决策 |
+|------|------|
+| ... | ... |
+
+### 技术风险
+- ...
+
+### 遗漏补充
+- ...
+
+### 下一步
+请将草案交给 **Codex** 执行 plan-revision 修订。
+```
+
+**注意**：必须使用 Edit 工具写入文件，不得只在对话中输出。
 
 ## Examples
 
 ### Example 1: 正常复审
 
 - **输入**: 用户说"请复审 Codex 的草案"
-- **步骤**: 读取 draft-plan.md → 分析 → 回写"Claude复审补充" → 告知用户
-- **验收**: draft-plan.md 包含"Claude复审补充"章节
+- **步骤**: 读取 draft-plan.md → 分析 → **用 Edit 工具**回写"Claude复审补充" → 告知用户
+- **验收**: draft-plan.md 文件末尾包含 `## Claude复审补充` 章节
 
-### Example 2: 信息不完整
+### Example 2: 错误示范（禁止）
+
+- **输入**: 用户说"请复审草案"
+- **错误做法**: 只在对话中输出表格，不写入文件
+- **正确做法**: 必须用 Edit 工具将分析结果写入 draft-plan.md
+
+### Example 3: 信息不完整
 
 - **输入**: 草案缺少技术栈信息
-- **步骤**: 读取 draft-plan.md → 发现缺失 → AskUserQuestion 询问 → 回写
-- **验收**: 用户回答后，draft-plan.md 包含完整分析
+- **步骤**: 读取 draft-plan.md → 发现缺失 → AskUserQuestion 询问 → **用 Edit 工具**回写
+- **验收**: 用户回答后，draft-plan.md 文件包含 `## Claude复审补充` 章节
 
-### Example 3: 项目根目录不明确
+### Example 4: 项目根目录不明确
 
 - **输入**: 用户说"复审草案"但未指定项目
 - **步骤**: AskUserQuestion 询问项目根目录 → 读取 → 分析 → 回写
