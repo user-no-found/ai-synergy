@@ -5,18 +5,25 @@
 ## 一、整体架构
 
 ```
-用户 → Claude 主对话（全局控制器）
-              │
-              ├─→ 循环A（规划阶段）
-              │     ├─→ plan-agent（生成/修订草案）
-              │     ├─→ analysis-agent（分析草案）
-              │     └─→ neutral-agent（独立分析）
-              │
-              └─→ 循环B（执行阶段）
-                    ├─→ impl.md 任务表
-                    ├─→ 编程子代理（python/rust/c/ui-agent）
-                    ├─→ build-agent（编译）
-                    └─→ plan-agent review（代码审核）
+                          用户
+                           │
+                           │ 新项目需求
+                           ▼
+                     Claude 主对话    ← 全局控制器
+                      (自动化调度)
+                           │
+                           │ Task 工具调用
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+        ▼                  ▼                  ▼
+    plan-agent       analysis-agent     neutral-agent
+      (规划)     ◄─►      (分析)     ◄─►    (第三方)
+        │
+        │ 分配任务
+        ▼
+                 实现子代理 & 辅助子代理
+   python-agent | rust-agent | c-agent | ui-agent
+   build-agent | sec-agent | env-agent | doc-agent
 ```
 
 ### 自动化控制
