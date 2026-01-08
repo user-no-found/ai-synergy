@@ -7,11 +7,21 @@
 ```mermaid
 flowchart TB
     User[用户] -->|新项目需求| Main[Claude 主对话<br/>全局控制器]
-    Main -->|Task 工具调用| PA[plan-agent<br/>规划]
-    Main -->|Task 工具调用| AA[analysis-agent<br/>分析]
-    Main -->|Task 工具调用| NA[neutral-agent<br/>第三方]
-    PA <--> AA <--> NA
-    PA -->|分配任务| Impl[实现子代理 & 辅助子代理<br/>python-agent / rust-agent / c-agent / ui-agent<br/>build-agent / sec-agent / env-agent / doc-agent]
+
+    subgraph LoopA[循环A - 规划阶段]
+        Main -->|1| PA[plan-agent]
+        Main -->|2| AA[analysis-agent]
+        Main -->|3| NA[neutral-agent]
+    end
+
+    Main -->|定稿后| Impl[impl.md 任务表]
+
+    subgraph LoopB[循环B - 执行阶段]
+        Impl --> Main2[Claude 主对话]
+        Main2 -->|并发调用| Code[编程子代理<br/>python/rust/c/ui-agent]
+        Code --> Build[build-agent]
+        Build --> Review[plan-agent review]
+    end
 ```
 
 ### 自动化控制
