@@ -114,8 +114,6 @@ questions: []         # 需要用户澄清的问题
 summary: "..."        # 本轮工作摘要
 ```
 
-**详细流程**：查看 ~/ai-synergy/ARCHITECTURE.md
-
 ---
 
 ## 执行阶段（循环B）
@@ -157,8 +155,6 @@ Task: build-agent 编译
 | 待执行 | `- [ ]` |
 | 执行中 | `- [√]` |
 | 已完成 | `~~- [√] ...~~` |
-
-**详细流程**：查看 ~/ai-synergy/ARCHITECTURE.md 或 skills/loop-b/
 
 ---
 
@@ -220,13 +216,3 @@ AskUserQuestion 让用户选择方案
         ▼
 Task 调用 ai-agent（mode: fix）→ 执行修改 + 同步镜像
 ```
-
----
-
-## 详细文档索引
-
-| 内容 | 位置 |
-|------|------|
-| 架构总览 | ~/ai-synergy/ARCHITECTURE.md |
-| 子代理定义 | ~/.claude/agents/ |
-| Skills | ~/.claude/skills/ |
