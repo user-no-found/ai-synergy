@@ -4,33 +4,26 @@
 
 ## 一、整体架构
 
-```mermaid
-flowchart TB
-    User[用户] -->|新项目需求| Claude[Claude 主对话<br/>全局控制器]
-
-    Claude -->|Task 工具调用| plan[plan-agent<br/>规划]
-    Claude -->|Task 工具调用| analysis[analysis-agent<br/>分析]
-    Claude -->|Task 工具调用| neutral[neutral-agent<br/>第三方]
-
-    plan <-->|协作| analysis
-    analysis <-->|协作| neutral
-
-    plan -->|分配任务| impl[实现子代理]
-    plan -->|分配任务| aux[辅助子代理]
-
-    subgraph 实现子代理
-        impl1[python-agent]
-        impl2[rust-agent]
-        impl3[c-agent]
-        impl4[ui-agent]
-    end
-
-    subgraph 辅助子代理
-        aux1[build-agent]
-        aux2[sec-agent]
-        aux3[env-agent]
-        aux4[doc-agent]
-    end
+```
+                          用户
+                           │
+                           │ 新项目需求
+                           ▼
+                     Claude 主对话    ← 全局控制器
+                      (自动化调度)
+                           │
+                           │ Task 工具调用
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+        ▼                  ▼                  ▼
+    plan-agent       analysis-agent     neutral-agent
+      (规划)     ◄─►      (分析)     ◄─►    (第三方)
+        │
+        │ 分配任务
+        ▼
+                 实现子代理 & 辅助子代理
+   python-agent | rust-agent | c-agent | ui-agent
+   build-agent | sec-agent | env-agent | doc-agent
 ```
 
 ### 自动化控制
@@ -54,25 +47,31 @@ plan-agent、analysis-agent、neutral-agent 三个核心子代理：
 
 ### 自动化流程图
 
-```mermaid
-flowchart TB
-    start[用户提出新项目需求] --> init[Claude: 创建 Record/, 写入需求]
-    init --> loopA[循环A 开始]
-
-    loopA --> plan_draft[Task: plan-agent 生成/修订草案]
-    plan_draft --> analysis[Task: analysis-agent 分析草案]
-    analysis --> neutral[Task: neutral-agent 独立分析]
-    neutral --> check{Claude 检查三方结果}
-
-    check -->|has_objection| loopA
-    check -->|need_info| ask_user[询问用户]
-    ask_user --> loopA
-    check -->|三方无分歧| confirm[询问用户确认]
-
-    confirm -->|同意| finalize[Task: plan-agent 定稿]
-    confirm -->|再分析| loopA
-
-    finalize --> done[结束循环A]
+```
+用户提出新项目需求
+        │
+        ▼
+Claude 主对话：创建 Record/，写入需求
+        │
+        ▼
+    循环A 开始
+        │
+        ├─→ Task: plan-agent (生成/修订草案)
+        │           │
+        │           ▼
+        │   Task: analysis-agent (分析草案)
+        │           │
+        │           ▼
+        │   Task: neutral-agent (独立分析)
+        │           │
+        │           ▼
+        │   Claude 检查三方结果：
+        │     ├─ has_objection → 继续循环 ─┘
+        │     ├─ need_info → 询问用户
+        │     └─ 三方无分歧 → 询问用户确认
+        │
+        ▼ 用户同意草案
+Task: plan-agent (定稿) → 结束循环A
 ```
 
 ### 子代理返回格式
@@ -116,29 +115,24 @@ summary: "本轮工作摘要"
 
 ### 完整流程
 
-```mermaid
-flowchart TB
-    impl[编程子代理完成] --> build[build-agent 编译]
-
-    build -->|有错误| fix1[plan-agent fix]
-    fix1 --> repair1[原子代理修复]
-    repair1 --> build
-
-    build -->|无错误| review[plan-agent review 代码审核]
-
-    review -->|有问题| fix2[plan-agent fix]
-    fix2 --> repair2[修复]
-    repair2 --> build
-
-    review -->|无问题| ask{询问用户: 安全分析?}
-
-    ask -->|是| sec[sec-agent 分析]
-    sec -->|有问题| fix3[plan-agent fix]
-    fix3 --> repair3[修复]
-    repair3 --> build
-    sec -->|无问题| complete
-
-    ask -->|否| complete[plan-agent complete<br/>git push]
+```
+编程子代理完成 → build-agent 编译
+        │
+        ├─→ 有错误 → plan-agent(fix) → 原子代理修复 → 重新编译（循环）
+        │
+        └─→ 无错误 → plan-agent(review) 代码审核
+                │
+                ├─→ 有问题 → plan-agent(fix) → 修复 → 重新编译 → 循环
+                │
+                └─→ 无问题 → 询问用户：安全分析？
+                        │
+                        ├─→ 是 → sec-agent 分析
+                        │       │
+                        │       ├─→ 有问题 → plan-agent(fix) → 循环
+                        │       │
+                        │       └─→ 无问题 → plan-agent(complete) → git push
+                        │
+                        └─→ 否 → plan-agent(complete) → git push
 ```
 
 ### plan-agent 模式
@@ -166,25 +160,32 @@ plan-agent 定稿阶段（mode: finalize）执行环境检查时，检测到环�
 
 ### 流程图
 
-```mermaid
-flowchart TB
-    check{plan-agent 环境检查}
-    check -->|环境完备| continue[继续定稿]
-    check -->|环境缺失| create[创建 Record/env.md<br/>返回 need_env]
-
-    create --> claude[Claude: Task 启动 env-agent]
-    claude --> read[env-agent 读取 Record/env.md]
-
-    read -->|用户级安装| exec[执行 → 打钩]
-    read -->|需要 sudo| collect[收集命令列表]
-
-    exec --> result{Claude 检查结果}
-    collect --> result
-
-    result -->|success| recheck[重新调用 plan-agent 环境检查]
-    result -->|need_sudo| ask[AskUserQuestion 让用户执行]
-    ask --> reenv[用户确认 → 重新调用 env-agent]
-    result -->|failed| handle[AskUserQuestion 询问处理]
+```
+plan-agent 环境检查
+        │
+        ├─→ 环境完备 → 继续定稿
+        │
+        └─→ 环境缺失 → 创建 Record/env.md → 返回 need_env
+                │
+                ▼
+        Claude 主对话：Task 启动 env-agent
+                │
+                ▼
+        env-agent 读取 Record/env.md
+                │
+                ├─→ 用户级安装 → 执行 → 打钩 [√]
+                │
+                └─→ 需要 sudo → 收集命令列表
+                        │
+                        ▼
+        Claude 主对话检查结果：
+                │
+                ├─→ success → 重新调用 plan-agent 环境检查
+                │
+                ├─→ need_sudo → AskUserQuestion 让用户执行
+                │       └─→ 用户确认 → 重新调用 env-agent
+                │
+                └─→ failed → AskUserQuestion 询问处理
 ```
 
 ### env.md 任务文件
@@ -223,20 +224,29 @@ plan-agent 定稿阶段（mode: finalize）执行子代理检查时，检测到�
 
 ### 流程图
 
-```mermaid
-flowchart TB
-    check{plan-agent 子代理检查}
-    check -->|子代理完备| continue[继续定稿]
-    check -->|子代理缺失| create[创建 Record/sub.md<br/>返回 need_sub]
-
-    create --> claude[Claude: Task 启动 sub-agent]
-    claude --> read[sub-agent 读取 Record/sub.md]
-
-    read --> exec[逐项创建子代理 → 打钩]
-    exec --> result{Claude 检查结果}
-
-    result -->|success| recheck[重新调用 plan-agent 子代理检查]
-    result -->|failed| handle[AskUserQuestion 询问处理]
+```
+plan-agent 子代理检查
+        │
+        ├─→ 子代理完备 → 继续定稿
+        │
+        └─→ 子代理缺失 → 创建 Record/sub.md → 返回 need_sub
+                │
+                ▼
+        Claude 主对话：Task 启动 sub-agent
+                │
+                ▼
+        sub-agent 读取 Record/sub.md
+                │
+                ├─→ 逐项创建子代理 → 打钩 [√]
+                │
+                └─→ 返回结果
+                        │
+                        ▼
+        Claude 主对话检查结果：
+                │
+                ├─→ success → 重新调用 plan-agent 子代理检查
+                │
+                └─→ failed → AskUserQuestion 询问处理
 ```
 
 ### sub.md 任务文件
@@ -281,21 +291,32 @@ Claude 主对话维护 `Record/Memory/memory.md`，记录整个过程的上下�
 
 ### 流程图
 
-```mermaid
-flowchart TB
-    openspec[plan-agent 创建 openspec 提案] --> impl[plan-agent 创建 Record/impl.md<br/>含依赖分组]
-    impl --> claude[Claude: 更新 memory.md, 解析分组]
-
-    claude --> phase1[阶段1 无依赖, 并发]
-    phase1 --> update1[更新 impl.md 打钩]
-    update1 --> parallel1[并发 Task 调用:<br/>python-agent-01<br/>rust-agent-01]
-
-    parallel1 --> done1[子代理完成返回]
-    done1 --> mark1[Claude: 更新 impl.md 加删除线<br/>检查阶段1是否全部完成]
-
-    mark1 --> phase2[阶段2 依赖阶段1, 并发...]
-    phase2 --> allDone[所有阶段完成]
-    allDone --> build[Task 调用 build-agent 编译构建]
+```
+plan-agent 创建 openspec 提案
+        │
+        ▼
+plan-agent 创建 Record/impl.md（含依赖分组）
+        │
+        ▼
+Claude 主对话：更新 memory.md，解析分组
+        │
+        ▼
+阶段1（无依赖，并发）：
+  1. 更新 impl.md 打钩 [√]
+  2. 并发 Task 调用：
+     ├─→ python-agent-01
+     └─→ rust-agent-01
+        │
+        ▼ 子代理完成返回
+Claude 主对话：
+  1. 更新 impl.md 加删除线 ~~[√]~~
+  2. 检查阶段1是否全部完成
+        │
+        ▼ 阶段1全部完成
+阶段2（依赖阶段1，并发）...
+        │
+        ▼ 所有阶段完成
+Task 调用 build-agent 编译构建
 ```
 
 ### impl.md 任务表
@@ -343,17 +364,25 @@ flowchart TB
 
 ### 流程图
 
-```mermaid
-flowchart TB
-    done[所有编程子代理完成<br/>impl.md 全部有删除线] --> claude[Claude: Task 启动 build-agent]
-    claude --> build[build-agent 执行编译]
-
-    build -->|success| update[更新 impl.md → 进入代码审核]
-    build -->|failed| errors[返回错误列表<br/>含责任槽位]
-
-    errors --> fix[Claude: 重新调用对应编程子代理修复]
-    fix --> rebuild[修复后重新调用 build-agent]
-    rebuild --> build
+```
+所有编程子代理完成（impl.md 全部 ~~[√]~~）
+        │
+        ▼
+Claude 主对话：Task 启动 build-agent
+        │
+        ▼
+build-agent 执行编译
+        │
+        ├─→ success → 更新 impl.md → 进入代码审核
+        │
+        └─→ failed → 返回错误列表（含责任槽位）
+                │
+                ▼
+        Claude 主对话：
+                │
+                ├─→ 重新调用对应编程子代理修复
+                │
+                └─→ 修复后重新调用 build-agent
 ```
 
 ### build-agent 返回格式
@@ -503,19 +532,34 @@ errors:
 
 ### 流程图
 
-```mermaid
-flowchart TB
-    issue[用户提出流程异议/问题] --> diagnose[Claude: Task 调用 ai-agent<br/>mode: diagnose]
-
-    diagnose --> result[ai-agent 返回诊断结果:<br/>问题根因/影响范围<br/>修改方案选项/推荐方案]
-
-    result --> ask[Claude: AskUserQuestion<br/>让用户选择方案]
-
-    ask -->|用户选择方案| fix[Task 调用 ai-agent<br/>mode: fix]
-    fix --> exec[ai-agent 执行修改:<br/>修改 ~/.claude/ 真实路径<br/>同步 ~/ai-synergy/ 镜像<br/>记录 ~/ai-synergy/CHANGES/]
-    exec --> done[返回修改结果]
-
-    ask -->|用户不满意| discuss[继续讨论或手动处理]
+```
+用户提出流程异议/问题
+        │
+        ▼
+Claude 主对话：Task 调用 ai-agent（mode: diagnose）
+        │
+        ▼
+ai-agent 返回诊断结果：
+  - 问题根因
+  - 影响范围
+  - 修改方案选项
+  - 推荐方案
+        │
+        ▼
+Claude 主对话：AskUserQuestion 让用户选择方案
+        │
+        ├─→ 用户选择方案 → Task 调用 ai-agent（mode: fix）
+        │       │
+        │       ▼
+        │   ai-agent 执行修改：
+        │     - 修改 ~/.claude/ 真实路径
+        │     - 同步 ~/ai-synergy/ 镜像
+        │     - 记录 ~/ai-synergy/CHANGES/
+        │       │
+        │       ▼
+        │   返回修改结果
+        │
+        └─→ 用户不满意 → 继续讨论或手动处理
 ```
 
 ### ai-agent 模式
