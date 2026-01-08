@@ -22,7 +22,8 @@ Claude 调用时必须提供：
 ## 记忆管理（必须执行）
 
 **每次调用时**：
-1. 读取 `Record/Memory/neutral-agent.md`（如存在）
+1. 读取 `Record/Memory/neutral-agent.md`
+   - 不存在则创建，写入初始模板
 2. 执行分析任务
 3. 更新记忆文件，记录本轮工作
 
