@@ -4,32 +4,14 @@
 
 ## 一、整体架构
 
-```
-                    ┌─────────────────┐
-                    │      用户       │
-                    └────────┬────────┘
-                             │ 新项目需求
-                             ▼
-                    ┌─────────────────┐
-                    │  Claude 主对话  │  ← 全局控制器
-                    │  (自动化调度)   │
-                    └────────┬────────┘
-                             │ Task 工具调用
-        ┌────────────────────┼────────────────────┐
-        │                    │                    │
-        ▼                    ▼                    ▼
-┌───────────────┐   ┌───────────────┐   ┌───────────────┐
-│  plan-agent   │   │analysis-agent│   │neutral-agent │
-│   (规划)      │◄─►│   (分析)      │◄─►│  (第三方)    │
-└───────┬───────┘   └───────────────┘   └───────────────┘
-        │
-        │ 分配任务
-        ▼
-┌─────────────────────────────────────────────────────┐
-│              实现子代理 & 辅助子代理                  │
-│  python-agent | rust-agent | c-agent | ui-agent    │
-│  build-agent | sec-agent | env-agent | doc-agent   │
-└─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    User[用户] -->|新项目需求| Main[Claude 主对话<br/>全局控制器]
+    Main -->|Task 工具调用| PA[plan-agent<br/>规划]
+    Main -->|Task 工具调用| AA[analysis-agent<br/>分析]
+    Main -->|Task 工具调用| NA[neutral-agent<br/>第三方]
+    PA <--> AA <--> NA
+    PA -->|分配任务| Impl[实现子代理 & 辅助子代理<br/>python-agent / rust-agent / c-agent / ui-agent<br/>build-agent / sec-agent / env-agent / doc-agent]
 ```
 
 ### 自动化控制
