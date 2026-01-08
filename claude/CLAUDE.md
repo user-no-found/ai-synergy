@@ -48,10 +48,24 @@
 ### 初始化流程
 
 ```
-1. 创建 Record/ 目录结构（含 Memory/ 子目录）
+1. 创建 Record/ 目录结构（含 Memory/、plan/ 子目录）
 2. 创建 Record/Memory/claude.md（主对话记忆）
-3. 写入用户需求到 Record/plan/draft-plan.md
+3. 写入用户需求到 Record/plan/draft-plan.md（只含需求和当前草案）
 4. 进入循环A（三方顺序讨论）
+```
+
+### 讨论记录结构（分离存储，避免累积）
+
+```
+Record/plan/
+├── draft-plan.md          # 只保留：用户需求 + 当前最新草案
+├── round-1/               # 第1轮讨论（独立目录）
+│   ├── plan-agent.md      # plan-agent 本轮意见
+│   ├── analysis-agent.md  # analysis-agent 本轮意见
+│   └── neutral-agent.md   # neutral-agent 本轮意见
+├── round-2/               # 第2轮讨论
+│   └── ...
+└── v1.0-final.md          # 定稿方案
 ```
 
 ### 循环A 执行逻辑（必须严格顺序执行，禁止并行）
