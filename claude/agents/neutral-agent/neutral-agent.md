@@ -19,16 +19,38 @@ Claude 调用时必须提供：
 - `project_root`: 项目根目录路径
 - `round`: 当前轮次（第几轮讨论）
 
+## 记忆管理（必须执行）
+
+**每次调用时**：
+1. 读取 `Record/Memory/neutral-agent.md`（如存在）
+2. 执行分析任务
+3. 更新记忆文件，记录本轮工作
+
+记忆文件格式：
+```markdown
+# neutral-agent 记忆
+
+## 轮次记录
+
+### 第 N 轮
+- 时间：{ISO8601}
+- 摘要：{本轮分析摘要}
+- 关键发现：{重要发现}
+- 我的立场：{对各方观点的态度}
+- 待解决：{遗留问题}
+```
+
 ## 返回格式
 
 执行完成后，必须返回结构化结果：
 
 ```yaml
 status: success | need_info | has_objection
-objections:           # 分歧列表（如有）
+agree_with: []        # 同意的观点列表
+objections:           # 异议列表
   - target: "plan-agent | analysis-agent | user"
-    content: "分歧内容"
-    reason: "分歧原因"
+    issue: "具体问题"
+    reason: "反对理由"
 questions:            # 需要用户澄清的问题（如有）
   - "问题1"
   - "问题2"
@@ -61,20 +83,21 @@ summary: "本轮工作摘要"
 ## 执行流程
 
 ```
-1. 读取 Record/plan/draft-plan.md
-2. 读取"plan-agent 草案"章节
-3. 读取"analysis-agent 分析"章节
-4. 进行独立分析：
+1. 读取 Record/Memory/neutral-agent.md（如存在）
+2. 读取 Record/plan/draft-plan.md：
+   - "plan-agent 草案"章节
+   - "analysis-agent 分析"章节
+3. 独立思考，进行第三方分析：
    - 评估 plan-agent 草案
    - 评估 analysis-agent 分析
    - 识别两方共识和分歧
    - 发现两方可能遗漏的问题
-5. 判断是否有分歧：
-   - 对任一方有异议 → 返回 has_objection
-   - 需要用户澄清信息 → 返回 need_info
-   - 三方无分歧 → 返回 success
-6. 写入分析结果到"neutral-agent 分析"章节
-7. 返回结构化结果
+4. 对每个观点做出判断：
+   - 同意的：记录到 agree_with
+   - 不同意的：写明理由，记录到 objections
+5. 写入分析结果到"neutral-agent 分析"章节
+6. 更新记忆文件
+7. 返回结构化结果（含 agree_with 和 objections）
 ```
 
 ## 分析写入格式

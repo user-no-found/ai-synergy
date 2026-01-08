@@ -44,55 +44,77 @@
 - "开始一个项目..."
 - 或其他明确的新项目需求
 
-### 自动化流程
+### 初始化流程
 
 ```
-1. 创建 Record/ 目录结构
-2. 写入用户需求到 Record/plan/draft-plan.md
-3. 进入循环A（三方讨论）
+1. 创建 Record/ 目录结构（含 Memory/ 子目录）
+2. 创建 Record/Memory/claude.md（主对话记忆）
+3. 写入用户需求到 Record/plan/draft-plan.md
+4. 进入循环A（三方顺序讨论）
 ```
 
-### 循环A 执行逻辑（必须严格执行）
+### 循环A 执行逻辑（必须严格顺序执行，禁止并行）
 
 ```
-循环开始:
-  │
-  ├─→ Task 启动 plan-agent（生成/修订草案）
-  │         │
-  │         ▼
-  ├─→ Task 启动 analysis-agent（分析草案）
-  │         │
-  │         ▼
-  ├─→ Task 启动 neutral-agent（独立分析）
-  │         │
-  │         ▼
-  └─→ 检查三方结果：
+第一轮（创建草案）:
+  Task: plan-agent（mode: draft）→ 创建初始草案
+        │
+        ▼
+  Task: analysis-agent → 分析草案，写入意见
+        │
+        ▼
+  Task: neutral-agent → 独立分析，写入意见
+
+后续轮次（讨论循环）:
+  Task: plan-agent（mode: discuss）
+        │ 读取两方意见
+        │ 同意的：修改草案
+        │ 不同意的：写明理由
+        ▼
+  Task: analysis-agent → 分析讨论，发表新意见
+        │
+        ▼
+  Task: neutral-agent → 分析讨论，发表新意见
+        │
+        ▼
+  Claude 检查三方结果：
         │
         ├─→ need_info → AskUserQuestion 询问用户 → 继续循环
         │
-        ├─→ has_objection → 继续下一轮循环
+        ├─→ has_objection（任一方有异议）→ 继续下一轮讨论
         │
-        └─→ 三方无分歧 → AskUserQuestion：同意草案 / 再分析一轮？
+        └─→ 三方全部同意 → AskUserQuestion：确认草案 / 再讨论？
                 │
-                ├─→ 同意 → Task 启动 plan-agent（mode: finalize）
-                │       │
-                │       ├─→ need_env → Task 启动 env-agent → 重新检查
-                │       ├─→ need_sub → Task 启动 sub-agent → 重新检查
+                ├─→ 确认 → Task: plan-agent（mode: finalize）
+                │       ├─→ need_env → Task: env-agent → 重新检查
+                │       ├─→ need_sub → Task: sub-agent → 重新检查
                 │       └─→ success → 结束循环A，进入循环B
                 │
-                └─→ 再分析 → 继续下一轮循环
+                └─→ 再讨论 → 继续下一轮
 ```
+
+### 记忆管理（必须执行）
+
+**Claude 主对话**：每轮讨论后更新 `Record/Memory/claude.md`
+**子代理**：每次调用时读取并更新自己的记忆文件：
+- `Record/Memory/plan-agent.md`
+- `Record/Memory/analysis-agent.md`
+- `Record/Memory/neutral-agent.md`
 
 ### 子代理返回格式
 
 ```yaml
 status: success | need_info | has_objection
-objections: []        # 分歧列表
+agree_with: []        # 同意的观点列表
+objections:           # 异议列表
+  - target: "plan-agent | analysis-agent | neutral-agent | user"
+    issue: "具体问题"
+    reason: "反对理由"
 questions: []         # 需要用户澄清的问题
 summary: "..."        # 本轮工作摘要
 ```
 
-**详细流程**：查看 ~/ai-synergy/ARCHITECTURE.md 或 skills/loop-a/
+**详细流程**：查看 ~/ai-synergy/ARCHITECTURE.md
 
 ---
 
