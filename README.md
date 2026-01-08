@@ -11,32 +11,15 @@
 
 ## 架构
 
-```
-                    ┌─────────────────┐
-                    │      用户       │
-                    └────────┬────────┘
-                             │ 新项目需求
-                             ▼
-                    ┌─────────────────┐
-                    │  Claude 主对话  │  ← 全局控制器
-                    │  (自动化调度)   │
-                    └────────┬────────┘
-                             │ Task 工具调用
-        ┌────────────────────┼────────────────────┐
-        │                    │                    │
-        ▼                    ▼                    ▼
-┌───────────────┐   ┌───────────────┐   ┌───────────────┐
-│  plan-agent   │   │analysis-agent│   │neutral-agent │
-│   (规划)      │◄─►│   (分析)      │◄─►│  (第三方)    │
-└───────┬───────┘   └───────────────┘   └───────────────┘
-        │
-        │ 分配任务
-        ▼
-┌─────────────────────────────────────────────────────┐
-│              实现子代理 & 辅助子代理                  │
-│  python-agent | rust-agent | c-agent | ui-agent    │
-│  build-agent | sec-agent | env-agent | doc-agent   │
-└─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    User[用户] -->|新项目需求| Main[Claude 主对话<br>全局控制器]
+    Main -->|Task 工具调用| Plan[plan-agent<br>规划]
+    Main -->|Task 工具调用| Analysis[analysis-agent<br>分析]
+    Main -->|Task 工具调用| Neutral[neutral-agent<br>第三方]
+    Plan <--> Analysis
+    Analysis <--> Neutral
+    Plan -->|分配任务| Impl[实现子代理 & 辅助子代理<br>python/rust/c/ui/build/sec/env/doc-agent]
 ```
 
 ### 自动化控制
@@ -60,79 +43,56 @@ plan-agent、analysis-agent、neutral-agent 三个核心子代理：
 
 ### 循环A（规划阶段 - 自动化）
 
-```
-用户提出新项目需求
-        │
-        ▼
-Claude 主对话：创建 Record/，写入需求
-        │
-        ▼
-┌───────────────────────────────────────┐
-│            循环A 开始                  │
-│                                       │
-│  ┌─→ Task: plan-agent (生成/修订草案)  │
-│  │           │                        │
-│  │           ▼                        │
-│  │   Task: analysis-agent (分析草案)   │
-│  │           │                        │
-│  │           ▼                        │
-│  │   Task: neutral-agent (独立分析)    │
-│  │           │                        │
-│  │           ▼                        │
-│  │   Claude 检查三方结果：              │
-│  │     ├─ has_objection → 继续循环 ──┘│
-│  │     ├─ need_info → 询问用户        │
-│  │     └─ 三方无分歧 → 询问用户确认    │
-│  │                                    │
-└──┴────────────────────────────────────┘
-        │
-        ▼ 用户同意草案
-Task: plan-agent (定稿)
-        │
-        ├─→ need_env → Task: env-agent → 循环
-        ├─→ need_sub → Task: sub-agent → 循环
-        └─→ success → 创建 openspec + impl.md → 结束循环A
+```mermaid
+flowchart TB
+    Start[用户提出新项目需求] --> Init[Claude 主对话：创建 Record/，写入需求]
+    Init --> LoopA
+
+    subgraph LoopA[循环A]
+        P[Task: plan-agent 生成/修订草案] --> A[Task: analysis-agent 分析草案]
+        A --> N[Task: neutral-agent 独立分析]
+        N --> Check{Claude 检查三方结果}
+        Check -->|has_objection| P
+        Check -->|need_info| Ask[询问用户]
+        Ask --> P
+        Check -->|三方无分歧| Confirm[询问用户确认]
+    end
+
+    Confirm -->|用户同意| Finalize[Task: plan-agent 定稿]
+    Finalize -->|need_env| Env[Task: env-agent] --> Finalize
+    Finalize -->|need_sub| Sub[Task: sub-agent] --> Finalize
+    Finalize -->|success| End[创建 openspec + impl.md]
 ```
 
 ### 循环B（执行阶段 - 自动化）
 
-```
-impl.md 任务表
-        │
-        ▼
-按依赖分组并发调用编程子代理
-        │
-        ▼ 全部完成
-Task: build-agent 编译
-        │
-        ├─→ failed → Task: plan-agent (fix) → 原子代理修复 → 循环
-        │
-        └─→ success → Task: plan-agent (review) 代码审核
-                │
-                ├─→ has_issues → Task: plan-agent (fix) → 循环
-                │
-                └─→ success → 询问用户：安全分析？
-                        │
-                        ├─→ 是 → Task: sec-agent
-                        │       ├─→ has_issues → 循环
-                        │       └─→ success ─┐
-                        │                    │
-                        └─→ 否 ──────────────┘
-                                             │
-                                             ▼
-                        Task: plan-agent (complete) → git push（远程）
+```mermaid
+flowchart TB
+    Impl[impl.md 任务表] --> Parallel[按依赖分组并发调用编程子代理]
+    Parallel --> Build[Task: build-agent 编译]
+
+    Build -->|failed| Fix[Task: plan-agent fix]
+    Fix --> FixAgent[原子代理修复] --> Build
+
+    Build -->|success| Review[Task: plan-agent review 代码审核]
+
+    Review -->|has_issues| Fix
+    Review -->|success| AskSec{询问用户：安全分析？}
+
+    AskSec -->|是| Sec[Task: sec-agent]
+    Sec -->|has_issues| Fix
+    Sec -->|success| Complete
+
+    AskSec -->|否| Complete[Task: plan-agent complete<br>git push 远程]
 ```
 
 ### 用户异议处理
 
-```
-用户提出流程问题（越权、循环卡死、状态不一致等）
-        │
-        ▼
-Task: ai-agent (diagnose) → 返回诊断 + 方案选项
-        │
-        ▼
-用户选择方案 → Task: ai-agent (fix) → 修改 + 同步镜像
+```mermaid
+flowchart LR
+    Issue[用户提出流程问题] --> Diag[Task: ai-agent diagnose<br>返回诊断 + 方案选项]
+    Diag --> Select[用户选择方案]
+    Select --> Fix[Task: ai-agent fix<br>修改 + 同步镜像]
 ```
 
 ## 目录结构
