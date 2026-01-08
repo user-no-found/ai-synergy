@@ -3,6 +3,7 @@
 - 禁止git commit中添加AI署名（Co-Authored-By、Signed-off-by等）
 - 当用户打断对话时，立即停止当前操作，根据新输入重新规划
 - 代码注释、报错信息用中文
+- **禁止时间周期估算**：不输出"X周完成"、"预计X天"等时间规划
 
 ## 上下文控制（必须遵守）
 
@@ -79,7 +80,7 @@
         ▼
   Claude 检查三方结果：
         │
-        ├─→ need_info → AskUserQuestion 询问用户 → 继续循环
+        ├─→ need_info → **必须用 AskUserQuestion** 询问用户 → 用户回答后继续循环
         │
         ├─→ has_objection（任一方有异议）→ 继续下一轮讨论
         │
