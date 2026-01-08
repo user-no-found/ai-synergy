@@ -54,24 +54,21 @@ plan-agent、analysis-agent、neutral-agent 三个核心子代理：
 Claude 主对话：创建 Record/，写入需求
         │
         ▼
-┌───────────────────────────────────────┐
-│            循环A 开始                  │
-│                                       │
-│  ┌─→ Task: plan-agent (生成/修订草案)  │
-│  │           │                        │
-│  │           ▼                        │
-│  │   Task: analysis-agent (分析草案)   │
-│  │           │                        │
-│  │           ▼                        │
-│  │   Task: neutral-agent (独立分析)    │
-│  │           │                        │
-│  │           ▼                        │
-│  │   Claude 检查三方结果：              │
-│  │     ├─ has_objection → 继续循环 ──┘│
-│  │     ├─ need_info → 询问用户        │
-│  │     └─ 三方无分歧 → 询问用户确认    │
-│  │                                    │
-└──┴────────────────────────────────────┘
+    循环A 开始
+        │
+        ├─→ Task: plan-agent (生成/修订草案)
+        │           │
+        │           ▼
+        │   Task: analysis-agent (分析草案)
+        │           │
+        │           ▼
+        │   Task: neutral-agent (独立分析)
+        │           │
+        │           ▼
+        │   Claude 检查三方结果：
+        │     ├─ has_objection → 继续循环 ─┘
+        │     ├─ need_info → 询问用户
+        │     └─ 三方无分歧 → 询问用户确认
         │
         ▼ 用户同意草案
 Task: plan-agent (定稿) → 结束循环A
