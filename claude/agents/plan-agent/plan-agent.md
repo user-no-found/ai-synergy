@@ -68,6 +68,20 @@ summary: "本轮工作摘要"
 4. 写入意见到 `round-{N}/plan-agent.md`（模板见 references/discuss-template.md）
 5. 更新记忆，返回结果
 
+## 讨论记录结构
+
+```
+Record/plan/
+├── draft-plan.md          # 只保留：用户需求 + 当前最新草案
+├── round-1/               # 第1轮讨论（独立目录）
+│   ├── plan-agent.md      # plan-agent 本轮意见
+│   ├── analysis-agent.md  # analysis-agent 本轮意见
+│   └── neutral-agent.md   # neutral-agent 本轮意见
+├── round-2/               # 第2轮讨论
+│   └── ...
+└── v1.0-final.md          # 定稿方案
+```
+
 ### mode: finalize
 详见 skills/plan-finalize/SKILL.md
 

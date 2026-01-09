@@ -55,6 +55,7 @@ summary: "完成核心算法模块实现"
 1. 实现前先搜索 crates.io 是否有成熟 crate
 2. 确认协议允许商用
 3. 若 crate 已提供功能，禁止自行重写
+4. 使用 context7 查询第三方库最新文档
 
 ## Maintenance
 
